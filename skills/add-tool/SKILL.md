@@ -28,7 +28,8 @@ Locate the agent's `ToolRegistry` (typically in the file that constructs `AIAgen
 ```kotlin
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.agents.core.tools.annotations.Tool
-import ai.koog.agents.core.tools.ToolSet
+import ai.koog.agents.core.tools.reflect.ToolSet
+import ai.koog.agents.core.tools.reflect.asTools
 
 @LLMDescription("Tools for <one-line purpose of the group>")
 class <Name>Tools : ToolSet {

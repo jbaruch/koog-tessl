@@ -84,6 +84,10 @@ Step 5) typed end-to-end. Pass the subset of tools the subtask needs plus the
 model that fits the subtask's complexity:
 
 ```kotlin
+import ai.koog.agents.ext.agent.subgraphWithTask
+import ai.koog.agents.ext.agent.subgraphWithVerification
+import ai.koog.agents.ext.agent.CriticResult
+
 val identifyProblem by subgraphWithTask<String, AccountIssueSummary>(
     tools = communicationTools.asTools() + readTools.asTools(),
     llmModel = OpenAIModels.Chat.GPT5_2,
@@ -96,11 +100,18 @@ Match the model to the subtask:
 - Action / generation → mid-tier (Sonnet, GPT-5)
 - Verification / reasoning → reasoning tier (O3, Opus, GPT-5 Pro)
 
-Pull `ai.koog:agents-ext:1.0.0` for `subgraphWithTask` /
-`subgraphWithVerification`.
+`subgraphWithTask`, `subgraphWithVerification`, and `CriticResult` live in
+package `ai.koog.agents.ext.agent` but ship inside the **`agents-core`**
+artifact, which the `koog-agents` umbrella already pulls. No extra
+dependency needed — the standalone `ai.koog:agents-ext` artifact is a
+separate `1.0.0-beta` module and is NOT required for these APIs.
 
-For graph DSL mechanics (edges, node naming, the rest of the surface), invoke
-`Skill(skill: "author-strategy")`.
+If you type-annotate the returned strategy, the strategy type lives in
+`ai.koog.agents.core.agent.entity.AIAgentGraphStrategy` (not bare
+`ai.koog.agents.core.agent`).
+
+For graph DSL mechanics (edges, node naming, the member-vs-extension
+import table), invoke `Skill(skill: "author-strategy")`.
 
 Proceed immediately to Step 5.
 

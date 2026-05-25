@@ -20,7 +20,7 @@ Two **always-on rules** carry the gotchas every Koog project hits — module coo
 
 | Rule | Concept |
 |---|---|
-| `module-coordinates` | Pin against `ai.koog:*:1.0+`; pull planner / MCP / Spring / Ktor modules explicitly; JDK 17 minimum |
+| `module-coordinates` | Pin against `ai.koog:*:1.0+` (with `1.0.0-beta` + `-jvm` suffix for the MCP and standalone-ext satellites); pull planner / MCP / Spring / Ktor modules explicitly; JDK 17 + Kotlin 2.3.10 minimum |
 | `agent-construction` | Top-level `AIAgent(...)` factory; `installFeatures` trailing lambda; `singleRunStrategy()` default; `AgentMemory` removed |
 
 ## Skills

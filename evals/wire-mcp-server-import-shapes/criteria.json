@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent produces a buildable MCP wiring — three concerns the call shape alone doesn't catch: (1) the transport builder is a top-level extension on `McpToolRegistryProvider` and needs its own import alongside the provider; (2) `agents-mcp` publishes as `1.0.0-beta`, not `1.0.0`; (3) it publishes only JVM variants, so the artifact needs the `-jvm` suffix. Agents that copy the call shape from documentation without resolving these typically produce code that does not compile or a Gradle line that fails resolution.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Picks the SSE transport",
+      "max_score": 18,
+      "description": "Builds the MCP registry using `McpToolRegistryProvider.fromSseUrl(...)` against the server URL. Does NOT use `streamableHttp` (the modern transport the operator said the server does not speak) or `fromProcess` (the server is not a local subprocess)"
+    },
+    {
+      "name": "Imports the `fromSseUrl` extension explicitly",
+      "max_score": 22,
+      "description": "The produced file contains `import ai.koog.agents.mcp.fromSseUrl` (or a star-import covering the package) alongside `import ai.koog.agents.mcp.McpToolRegistryProvider`. Importing only the provider does NOT bring the transport extension into scope — `fromSseUrl` is a top-level extension function in the same package, declared separately from the provider object"
+    },
+    {
+      "name": "Pins the MCP artifact to `1.0.0-beta`",
+      "max_score": 18,
+      "description": "The Gradle dependency uses version `1.0.0-beta` (e.g., `ai.koog:agents-mcp-jvm:1.0.0-beta`). NOT `1.0.0` — Koog 1.0's stable release did not publish `agents-mcp` at `1.0.0`; only `1.0.0-beta` is on Maven Central. An answer that pins `1.0.0` fails dependency resolution"
+    },
+    {
+      "name": "Uses the `-jvm` suffix on the artifact",
+      "max_score": 18,
+      "description": "The Gradle line uses `ai.koog:agents-mcp-jvm:...` (NOT bare `ai.koog:agents-mcp:...`). `agents-mcp` publishes only JVM-specific variants at the relevant version; without the suffix Gradle KMP variant resolution cannot pick the JVM artifact and the build fails with 'could not find'"
+    },
+    {
+      "name": "Builds the registry before constructing the agent",
+      "max_score": 14,
+      "description": "Calls `McpToolRegistryProvider.fromSseUrl(...)` and assigns it to a variable BEFORE the `AIAgent(...)` call, then passes that variable as `toolRegistry`. Does not try to add MCP tools after the agent is constructed (the registry is read once during feature install)"
+    },
+    {
+      "name": "Calls the suspending builder inside a coroutine context",
+      "max_score": 10,
+      "description": "The `fromSseUrl` builder runs inside the existing `runBlocking { ... }` (or another coroutine scope), since it is a suspending call"
+    }
+  ]
+}

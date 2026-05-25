@@ -66,7 +66,8 @@ Build a client and use it inside the local agent — typically wrapped as a tool
 import ai.koog.a2a.client.A2AClient
 import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.annotations.LLMDescription
-import ai.koog.agents.core.tools.ToolSet
+import ai.koog.agents.core.tools.reflect.ToolSet
+import ai.koog.agents.core.tools.reflect.asTools
 
 val remoteClient = A2AClient.builder()
     .endpoint("https://remote-agent.example/a2a")

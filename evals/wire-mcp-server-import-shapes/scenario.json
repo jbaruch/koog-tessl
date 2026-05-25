@@ -1,0 +1,1 @@
+{ "description": "Connect to an SSE-only MCP server; produce correct extension imports for `fromSseUrl` and the `-jvm:1.0.0-beta` dependency line" }

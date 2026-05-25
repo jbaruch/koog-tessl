@@ -10,6 +10,11 @@ per-phase models.
 ## Tools sliced by access pattern
 
 ```kotlin
+import ai.koog.agents.core.tools.annotations.Tool
+import ai.koog.agents.core.tools.annotations.LLMDescription
+import ai.koog.agents.core.tools.reflect.ToolSet
+import ai.koog.agents.core.tools.reflect.asTools
+
 class CommunicationTools(private val sessionId: String) : ToolSet {
     @Tool
     @LLMDescription("Ask the user a clarifying question and wait for the reply")
@@ -72,6 +77,14 @@ data class AccountIssueSolution(
 ## Strategy: four subgraphs + verify/adjust loop
 
 ```kotlin
+import ai.koog.agents.core.dsl.builder.strategy
+import ai.koog.agents.ext.agent.subgraphWithTask
+import ai.koog.agents.ext.agent.subgraphWithVerification
+import ai.koog.agents.ext.agent.CriticResult
+// forwardTo / onCondition / transformed are infix members — no imports needed.
+// onToolCalls, onTextMessage, onIsInstance, etc. are extensions in
+// ai.koog.agents.core.dsl.extension.* and would each need an import here if used.
+
 val triageStrategy = strategy<String, AccountIssueSolution>("issue-triage") {
     val identifyProblem by subgraphWithTask<String, AccountIssueSummary>(
         tools = communicationTools.asTools() + readTools.asTools(),
