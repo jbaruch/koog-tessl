@@ -15,11 +15,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
-      - name: Publish to Tessl registry
-        # Pinned past v1: the v1 tag SHA (088d998b) ships a `tessl tile info | grep`
-        # pipeline that exits non-zero on first-publish 404, killing the script under
-        # `bash -e -o pipefail` before the [ -z "$LATEST" ] branch executes. main HEAD
-        # 922c589 adds explicit 404 handling. Revisit when tesslio advances v1.
-        uses: tesslio/patch-version-publish@922c5897539c33bf5937b87d0fbd0c0316df8975  # main @ 2026-05-25
+      - name: Setup Tessl CLI
+        uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e  # v2
         with:
           token: ${{ secrets.TESSL_TOKEN }}
+      - name: Publish current tile.json version
+        # Explicitly NOT using `tesslio/patch-version-publish`. That action's
+        # design contract (auto-bump patch when local matches registry, then
+        # push a `Bump <tile> to <version> [skip ci]` commit back to main)
+        # conflicts with `jbaruch/coding-policy: ci-safety` on two fronts —
+        # direct push to a protected branch, and a `[skip ci]` message that
+        # bypasses the reviewer gate. Instead: publish whatever tile.json
+        # says, and require human-authored CHANGELOG + tile.json bumps in
+        # the PR that ships each release. Missing-bump cases surface as a
+        # red publish run (`Version X.Y.Z already exists`), which is the
+        # correct signal — not a silent auto-bump.
+        run: tessl tile publish .
