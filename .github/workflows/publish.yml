@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
       - name: Publish to Tessl registry
-        uses: tesslio/patch-version-publish@v1
+        uses: tesslio/patch-version-publish@088d998ba027eb8f646397e83fcd263cd336f139  # v1
         with:
           token: ${{ secrets.TESSL_TOKEN }}
