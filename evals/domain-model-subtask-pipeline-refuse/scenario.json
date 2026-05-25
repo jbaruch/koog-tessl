@@ -1,0 +1,1 @@
+{ "description": "Decline to apply the subtask-pipeline pattern when the workload is a single text-to-text transform with no phases" }
