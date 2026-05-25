@@ -1,0 +1,41 @@
+{
+  "context": "Tests whether the agent correctly uses Attachment.file() for PDF documents, Attachment.image(url) for URL-based image references, selects an Anthropic model that supports both content types (Opus_4_* or Sonnet_4_*), and delegates encoding to Koog rather than manually base64-encoding or downloading files.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "PDF via Attachment.file",
+      "description": "Uses Attachment.file(file) (or Attachment.file(path)) to attach the PDF — does NOT use Attachment.image() for the PDF, and does NOT read the file bytes and base64-encode them manually",
+      "max_score": 20
+    },
+    {
+      "name": "Image via Attachment.image(url)",
+      "description": "Attaches the product image using Attachment.image(url) (a URL overload) rather than downloading the image to disk first and then passing a File",
+      "max_score": 20
+    },
+    {
+      "name": "Anthropic model with PDF support",
+      "description": "Uses an Anthropic model from the Opus_4_* or Sonnet_4_* family (e.g., Anthropic.Models.Opus_4 or Sonnet_4_0), not a generic or older model that lacks PDF acceptance",
+      "max_score": 15
+    },
+    {
+      "name": "No manual file encoding",
+      "description": "Does NOT manually base64-encode the PDF or image bytes, and does NOT call any external encoding/conversion library — relies on the Koog framework to handle provider-specific wire format",
+      "max_score": 15
+    },
+    {
+      "name": "Both attachments in one Message.User",
+      "description": "Both the PDF and the image appear in the attachments list of a single Message.User (not spread across separate LLM calls or separate messages)",
+      "max_score": 15
+    },
+    {
+      "name": "Runtime attachment construction in node body",
+      "description": "Builds the Message.User (including attachments) inside a node body that receives the PDF path and image URL as inputs — not hardcoded inline in a static prompt DSL block",
+      "max_score": 10
+    },
+    {
+      "name": "Sends via nodeLLMSendMessage",
+      "description": "Routes the Message.User through nodeLLMSendMessage (the message-input family), not nodeLLMRequest (the string-input family)",
+      "max_score": 5
+    }
+  ]
+}

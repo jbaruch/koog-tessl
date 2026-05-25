@@ -1,0 +1,1 @@
+{ "description": "Refuse to scaffold over an existing non-empty directory" }
