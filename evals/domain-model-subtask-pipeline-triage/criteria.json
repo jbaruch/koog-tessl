@@ -10,7 +10,7 @@
     {
       "name": "Each phase grants only the matching tool subset",
       "max_score": 15,
-      "description": "The understanding phase's subgraphWithTask receives communication + read tools (no write); the action phase receives read + write (no communication); the verification phase receives communication + read (no write); the adjustment phase receives read + write (or read + communication — whichever the developer's wording supports, as long as write access is not granted to verification). NOT every phase getting every tool"
+      "description": "The understanding phase's subgraphWithTask receives communication + read tools (no write); the action phase receives read + write (no communication); the verification phase receives communication + read (no write); the adjustment phase receives read + write (the task says it re-runs the action — communication-only adjustment cannot apply the corrected fix). NOT every phase getting every tool"
     },
     {
       "name": "Typed @LLMDescription'd data classes for inter-phase handoffs",

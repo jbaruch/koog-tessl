@@ -15,4 +15,4 @@ They also mention: the understanding phase doesn't need the smartest model — a
 
 ## Output Specification
 
-Walk through how to structure this in Koog. Produce the agent code as a single Kotlin file (tools, data classes, strategy, agent construction) along with the necessary Gradle dependency lines, labeled.
+Walk through how to structure this in Koog. Produce the agent code as a single Kotlin file along with the necessary Gradle dependency lines, labeled.
