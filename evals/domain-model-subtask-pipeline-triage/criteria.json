@@ -35,7 +35,7 @@
     {
       "name": "Declares the required Gradle dependencies",
       "max_score": 5,
-      "description": "Names the Gradle dependency lines needed for the pipeline — at minimum `ai.koog:agents-ext:1.0.0` (provides `subgraphWithTask` / `subgraphWithVerification`) plus whatever provider modules (`prompt-executor-openai-client`, `prompt-executor-anthropic-client`) the chosen models require. The task explicitly asks for dependency lines labeled; an answer that omits them is incomplete"
+      "description": "Names the Gradle dependency lines needed for the pipeline — at minimum `ai.koog:agents-ext:1.0.0` (provides `subgraphWithTask` / `subgraphWithVerification`) plus whatever provider modules (`prompt-executor-openai-client`, `prompt-executor-anthropic-client`) the chosen models require. An answer that omits the dependencies is incomplete — the agent shouldn't compile without them"
     }
   ]
 }
