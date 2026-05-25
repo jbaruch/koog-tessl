@@ -17,7 +17,9 @@ description: >
 
 Process steps in order. Do not skip ahead.
 
-Full end-to-end Kotlin example for the seven steps below:
+Worked Kotlin example excerpts for the seven steps below (illustrative —
+contains `...` placeholders for tool bodies and prompt-executor wiring; not a
+standalone buildable file):
 
 ```text
 skills/domain-model-subtask-pipeline/references/banking-example.md
