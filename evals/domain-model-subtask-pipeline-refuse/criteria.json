@@ -10,7 +10,7 @@
     {
       "name": "Redirects to the simpler shape",
       "max_score": 30,
-      "description": "Recommends the default singleRunStrategy() with the systemPrompt parameter, OR the functional-agent shape if some Kotlin logic is needed. Names one of these specifically. Does NOT build a contrived subgraphWithTask<String, String> pipeline just to satisfy the developer's request"
+      "description": "Recommends the default agent shape — `AIAgent(systemPrompt = ..., promptExecutor = ..., llmModel = ...)` (the default `singleRunStrategy()` is implicit and usually omitted) — OR the functional-agent shape if some Kotlin logic is needed. Names one of these specifically. Does NOT build a contrived subgraphWithTask<String, String> pipeline just to satisfy the developer's request"
     },
     {
       "name": "Does not produce subgraphWithTask code",

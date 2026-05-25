@@ -98,7 +98,7 @@ The cost of running every subtask at the most-expensive tier compounds fast on
 long chains. Mixed-model pipelines often cost a fraction of single-model ones
 at similar output quality.
 
-Pull `ai.koog:agents-ext:1.0.0+` for `subgraphWithTask` /
+Pull `ai.koog:agents-ext:1.0.0` for `subgraphWithTask` /
 `subgraphWithVerification`.
 
 For graph DSL mechanics — edges, node naming, the rest of the surface — invoke
@@ -143,11 +143,12 @@ LLM; `fixProblem`'s actions are visible to `verifySolution`.
 
 The implication: if the chain is long, history grows. Compress at deliberate
 boundaries — typically after the verification loop converges, or between
-unrelated phases — with `nodeLLMCompressHistory<T>()` (the typed compression
-node, which preserves the output type when compressing within a subtask
-boundary).
+unrelated phases — inside a write session: `llm.writeSession {
+replaceHistoryWithTLDR() }`. Pass a `HistoryCompressionStrategy` variant
+when the default TL;DR shape doesn't fit.
 
-For history-compression mechanics, invoke `Skill(skill: "manage-state")`.
+For history-compression mechanics and the full set of
+`HistoryCompressionStrategy` variants, invoke `Skill(skill: "manage-state")`.
 
 Proceed immediately to Step 7.
 

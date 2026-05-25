@@ -1,17 +1,13 @@
-# Build a Support Triage Agent With Distinct Phases
+# Build a Customer-Support Agent for a Bank
 
 ## Problem/Feature Description
 
-A developer is building an agent for a customer-support team. They describe the workflow as four phases: first the agent should understand what the customer's issue actually is from their message, then take whatever action resolves it, then check whether the resolution actually worked, and if it didn't — adjust and re-check until it does.
+A developer is building an agent for a bank's customer-support team. The agent handles complaints about specific transactions and account problems — disputed charges, missed transfers, balance discrepancies. End-to-end, the agent should: figure out what the customer is actually complaining about (possibly asking a clarifying question first), do whatever needs doing to resolve it (looking up the account, issuing refunds or transfers, opening dispute tickets), then check whether the issue is actually resolved — and if it isn't, try again instead of handing back to a human.
 
-They say the phases have very different shapes:
+Two operational constraints the developer cares about:
 
-- The understanding phase looks at the message, asks clarifying questions, and reads the customer's account history. It shouldn't be able to change anything yet
-- The action phase reads account state and applies changes (refunds, transfers, dispute openings). It shouldn't be talking to the customer at this point
-- The verification phase looks at the result and may follow up with the customer to confirm. It shouldn't be making any further changes
-- The adjustment phase re-runs the action with whatever the verifier flagged
-
-They also mention: the understanding phase doesn't need the smartest model — a cheap one is fine. The action phase needs a mid-tier model. The verifier should be the most expensive reasoning model. They want each phase to produce a well-defined intermediate result that the next phase consumes — not a free-form text handoff.
+- The agent shouldn't be able to issue refunds or transfers while it's still asking the customer clarifying questions, and it shouldn't be initiating chatty back-and-forth with the customer in the middle of executing a refund. The work is gated, not interleaved.
+- Token cost matters. The developer doesn't want every step paying premium reasoning-model rates — only the step that genuinely needs reasoning should pay for it; the rest should use whatever's cheap and fast enough for that step's job.
 
 ## Output Specification
 

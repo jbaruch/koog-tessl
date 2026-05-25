@@ -125,10 +125,14 @@ val agent = AIAgent(
 ## History compression between phases
 
 ```kotlin
-val compressHistory by nodeLLMCompressHistory<AccountIssueSolution>(
-    strategy = HistoryCompressionStrategy.Chunked(chunkSize = 20)
-)
+import ai.koog.agents.core.dsl.extension.HistoryCompressionStrategy
+
+// inside a node body, between phases
+llm.writeSession {
+    replaceHistoryWithTLDR()   // collapses everything into a single TL;DR summary
+}
 ```
 
-Insert as a node between phases when the chain is long; see
-`Skill(skill: "manage-state")` for compression strategies.
+Invoke at the end of a phase or the start of the next, not at every node; see
+`Skill(skill: "manage-state")` for `HistoryCompressionStrategy` variants
+(`Chunked`, `FromLastNMessages`, `FactRetrieval`, etc.).

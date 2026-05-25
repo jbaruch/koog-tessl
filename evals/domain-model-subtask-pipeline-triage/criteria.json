@@ -25,7 +25,7 @@
     {
       "name": "Verification + adjust loop with CriticResult branching",
       "max_score": 15,
-      "description": "Verification is a subgraphWithVerification<T> whose CriticResult<T> drives two edges: one to finish on .successful, one to the adjust phase on !.successful with transformed { it.feedback }. The adjust phase has a back-edge to verification. NOT a fire-and-forget linear chain"
+      "description": "Verification is a subgraphWithVerification<T> whose CriticResult<T> drives two edges: success goes to nodeFinish (transformed { it.input }); failure goes to the adjust phase carrying the critic feedback as a non-null String for the adjust subgraph's input (e.g., transformed { it.feedback.orEmpty() }, or an adjust subgraph whose input type matches the nullable String?). The adjust phase has a back-edge to verification. NOT a fire-and-forget linear chain"
     },
     {
       "name": "Mixed model selection per phase",
