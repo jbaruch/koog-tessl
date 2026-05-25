@@ -44,5 +44,8 @@ alwaysApply: true
 ## JDK and tooling minima
 
 - JDK 17 minimum (#1931). Targeting JDK 8 or 11 will not compile against 1.0
-- Kotlin **2.3.10 or later**. Koog 1.0 is compiled with Kotlin 2.3.x; earlier Kotlin versions fail at consume time with `binary version of its metadata is 2.3.0, expected version is 2.1.0` (or similar). Bump the Kotlin Gradle plugin before the first build
+- Kotlin **2.3.10 or later** minimum
+- Koog 1.0 is compiled with Kotlin 2.3.x
+- Earlier Kotlin versions fail at consume time with `binary version of its metadata is 2.3.0, expected version is 2.1.0` (or similar)
+- Bump the Kotlin Gradle plugin before the first build
 - Android consumers must set `android.useAndroidX=true` in `gradle.properties`

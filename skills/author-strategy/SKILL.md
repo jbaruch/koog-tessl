@@ -89,21 +89,11 @@ Edges declare topology and branching. Vocabulary:
 - `edge(a forwardTo b transformed { reshape(it) })` — change shape between nodes
 - `a then b` — shorthand for an unconditional sequential edge
 
-**Member vs extension — which imports you need.** The infix vocabulary splits across two shapes; getting it wrong is the most common copy-paste compile failure.
+**Member vs extension — which imports you need.** `forwardTo`, `onCondition`, and `transformed` are infix members (no import). The other primitives (`onToolCalls`, `onTextMessage`, `onIsInstance`, `onMessageParts`, `onSuccessful`, `onFailure`, `asUserMessage`, `asToolResultMessage`) are top-level extensions in `ai.koog.agents.core.dsl.extension.*` and need explicit imports. Full table:
 
-| Primitive | Kind | Import needed? |
-|---|---|---|
-| `forwardTo` | infix member on `AIAgentNodeBase` | No |
-| `onCondition` | infix member on `AIAgentEdgeBuilderIntermediate` | No |
-| `transformed` | infix member on `AIAgentEdgeBuilderIntermediate` | No |
-| `onToolCalls` | top-level extension | `import ai.koog.agents.core.dsl.extension.onToolCalls` |
-| `onTextMessage` | top-level extension | `import ai.koog.agents.core.dsl.extension.onTextMessage` |
-| `onIsInstance` | top-level extension | `import ai.koog.agents.core.dsl.extension.onIsInstance` |
-| `onMessageParts` | top-level extension | `import ai.koog.agents.core.dsl.extension.onMessageParts` |
-| `onSuccessful` / `onFailure` | top-level extensions | `import ai.koog.agents.core.dsl.extension.onSuccessful` / `onFailure` |
-| `asUserMessage` / `asToolResultMessage` | top-level extensions | `import ai.koog.agents.core.dsl.extension.asUserMessage` / `asToolResultMessage` |
-
-Members travel with their receiver type and need no import. Extensions live in `ai.koog.agents.core.dsl.extension.*` and must be imported by name. Star-imports work but obscure which DSL surface is actually in use.
+```text
+skills/author-strategy/references/edge-primitive-imports.md
+```
 
 Branching logic belongs in edge predicates, not inside node bodies. Lifting it to edges keeps the topology inspectable.
 

@@ -47,7 +47,12 @@ Proceed immediately to Step 3.
 
 In the file that constructs the agent, build the MCP registry **before** the agent. Pick the form matching the transport.
 
-**`McpToolRegistryProvider` is an `object`; each transport builder (`streamableHttp`, `fromSseUrl`, `fromProcess`) is a top-level extension function in `ai.koog.agents.mcp`.** Each requires its own import alongside the provider — `import ai.koog.agents.mcp.McpToolRegistryProvider` alone won't bring the builders into scope.
+**Two-import rule for the registry builder:**
+
+- Import `McpToolRegistryProvider` — the `object`
+- Import the transport builder by name — `streamableHttp`, `fromSseUrl`, or `fromProcess`
+- The builders are top-level extensions in `ai.koog.agents.mcp`, not members of the provider object
+- Importing only the provider does NOT bring the builders into scope
 
 **Streamable HTTP (preferred):**
 
