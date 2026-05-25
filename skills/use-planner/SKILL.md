@@ -13,9 +13,9 @@ description: >
 
 # Use Planner Skill
 
-This skill is an action router — pick the step that matches the user's intent and execute only that step. Do not parallelize.
+This skill is an action router — pick the step that matches the user's intent and execute only that step. Do not run other steps; do not parallelize.
 
-Chaining contract (exhaustive):
+Chaining exception (exhaustive — overrides "Do not run other steps" only as listed):
 
 - Step 1 is the entry point. It either redirects (via `Skill(skill: "author-strategy")`) and finishes, or chains to Step 2 / Step 3 to wire the picked planner variant
 - Steps 2 and 3 are terminal — execute one, then finish. Do not chain Step 2 to Step 3 or vice versa
