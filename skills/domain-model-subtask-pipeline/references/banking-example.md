@@ -19,11 +19,11 @@ class CommunicationTools(private val sessionId: String) : ToolSet {
 class AccountReadTools(private val userId: String) : ToolSet {
     @Tool
     @LLMDescription("Get account balance (in USD) for the current user")
-    fun getAccountBalance(): Int { ... }
+    fun getAccountBalance(): String { ... }   // stringify at the boundary per add-tool
 
     @Tool
     @LLMDescription("Returns a list of transactions for the current user")
-    fun getLatestTransactions(startDate: Instant?, status: Transaction.Status?): List<Transaction> { ... }
+    fun getLatestTransactions(startDate: Instant?, status: Transaction.Status?): String { ... }   // JSON-encoded list
 }
 
 class AccountWriteTools(private val userId: String) : ToolSet {
@@ -32,7 +32,7 @@ class AccountWriteTools(private val userId: String) : ToolSet {
     fun transferMoney(
         @LLMDescription("ID of the recipient") recipientId: String,
         @LLMDescription("Amount in USD to be transferred") amount: Int,
-    ): TransferResult { ... }
+    ): String { ... }   // JSON-encoded result
 }
 ```
 
