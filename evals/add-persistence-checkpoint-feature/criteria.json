@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent installs the write-side persistence feature (the right tool for continuous checkpointing) rather than only using runFromCheckpoint (which is the read-only resume path and would not help survive restarts on its own).",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Installs the Persistence feature",
+      "max_score": 30,
+      "description": "Calls install(Persistence) { ... } inside the AIAgent(...) trailing lambda — the write-side feature that produces checkpoints continuously. Does NOT only use runFromCheckpoint on its own — that's the read path and produces no new checkpoints"
+    },
+    {
+      "name": "Adds the JDBC persistence backend dependency",
+      "max_score": 25,
+      "description": "Adds ai.koog:agents-features-persistence-jdbc to build.gradle.kts at 1.0.0 or later — the developer named JDBC explicitly. Does not add an in-memory backend (would not survive restarts) or a different backend than asked"
+    },
+    {
+      "name": "Configures the backend with the JDBC connection",
+      "max_score": 20,
+      "description": "Inside the install block, configures the JDBC backend with the connection URL (and credentials read from env vars, not hardcoded). The configuration is concrete, not a TODO placeholder"
+    },
+    {
+      "name": "Uses Persistence type names, not Persistency",
+      "max_score": 10,
+      "description": "Imports and references types with the 1.0 spelling Persistence* — the pre-1.0 Persistency* spelling was renamed. Uses Persistence-, not Persistency-, anywhere in the snippet"
+    },
+    {
+      "name": "Shows resume path with runFromCheckpoint",
+      "max_score": 10,
+      "description": "Demonstrates how the resume side works — after a restart, loads the latest checkpoint and calls agent.runFromCheckpoint(...) instead of agent.run(...). Without showing this, the durability story is incomplete"
+    },
+    {
+      "name": "Notes serializability requirement for storage",
+      "max_score": 5,
+      "description": "Calls out (in code comment or surrounding prose) that any AIAgentStorage values must be @Serializable — non-serializable types break checkpointing silently"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent installs the OpenTelemetry feature with the Langfuse backend integration, configures the session-id trace attribute correctly, and routes everything through the install block — rather than reaching for a bespoke OTel SDK setup or a non-Koog Langfuse client.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Adds the agents-features-opentelemetry dependency",
+      "max_score": 25,
+      "description": "Adds ai.koog:agents-features-opentelemetry to build.gradle.kts at 1.0.0 or later. The umbrella does not include observability"
+    },
+    {
+      "name": "Installs OpenTelemetry in the trailing lambda",
+      "max_score": 25,
+      "description": "Calls install(OpenTelemetry) { ... } inside the AIAgent(...) trailing lambda. Does not configure observability by mutating the agent after construction"
+    },
+    {
+      "name": "Calls addLangfuseExporter inside the install block",
+      "max_score": 20,
+      "description": "Uses the addLangfuseExporter integration inside the install(OpenTelemetry) block. Does not roll a custom HTTP client targeting Langfuse, does not pull a non-Koog Langfuse library"
+    },
+    {
+      "name": "Sets langfuse.session.id from the environment",
+      "max_score": 15,
+      "description": "Passes a CustomAttribute (or equivalent supported trace attribute) named langfuse.session.id whose value is read from System.getenv(\"LANGFUSE_SESSION_ID\")"
+    },
+    {
+      "name": "Turns on verbose mode",
+      "max_score": 10,
+      "description": "Calls setVerbose(true) inside the install block, matching the developer's stated preference for initial rollout"
+    },
+    {
+      "name": "Does not stack a second backend integration",
+      "max_score": 5,
+      "description": "Does not also call addOtlpExporter, addDatadogExporter, or addWeaveExporter — stacking backends inflates cost without adding signal"
+    }
+  ]
+}

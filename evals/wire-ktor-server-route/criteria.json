@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent uses the koog-ktor plugin (the supported integration path) inside the developer's existing Application.module(), rather than hand-rolling a parallel Ktor server or constructing the agent inside the route handler on every request.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Installs the Koog Ktor plugin",
+      "max_score": 30,
+      "description": "Calls install(Koog) { ... } inside Application.module(). Does NOT construct the AIAgent inside the route handler (which would rebuild it on every request) and does NOT start a separate Ktor server instance"
+    },
+    {
+      "name": "Adds the koog-ktor dependency",
+      "max_score": 20,
+      "description": "Adds ai.koog:koog-ktor at 1.0.0 or later to build.gradle.kts. The umbrella does not include the Ktor integration"
+    },
+    {
+      "name": "Configures the prompt executor inside the install block",
+      "max_score": 15,
+      "description": "Wires simpleOpenAIExecutor (reading the API key from env) inside the install(Koog) configuration block. Does not construct executors inside the route handler"
+    },
+    {
+      "name": "Reads the OpenAI API key from the environment",
+      "max_score": 10,
+      "description": "Reads the API key via System.getenv(\"OPENAI_API_KEY\"). Does not embed the key literal in source"
+    },
+    {
+      "name": "Adds a POST /agent route",
+      "max_score": 15,
+      "description": "Inside routing { ... }, declares a post(\"/agent\") { ... } handler that reads the request body and writes the agent result back. Receives input as call.receiveText() (or equivalent) and responds with call.respondText (or equivalent)"
+    },
+    {
+      "name": "Resolves the agent from the plugin attribute",
+      "max_score": 10,
+      "description": "Reads the configured agent inside the route handler via the plugin attribute key (call.attributes[Koog.key] or equivalent supported accessor) rather than referencing a top-level lateinit or rebuilding the agent inline"
+    }
+  ]
+}

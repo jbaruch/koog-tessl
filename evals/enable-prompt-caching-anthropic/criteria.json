@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent uses the 1.0 explicit cacheControl surface on the prompt DSL (correct path) rather than the removed pre-1.0 cacheable boolean or a hand-rolled HTTP header injection.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses cacheControl on the system segment",
+      "max_score": 35,
+      "description": "Sets cacheControl = CacheControl.Ephemeral (or equivalent) on the system(...) call inside the prompt DSL. Does NOT use a removed pre-1.0 boolean like cacheable = true and does NOT hand-roll cache_control HTTP headers"
+    },
+    {
+      "name": "Mentions Anthropic minimum-token requirement",
+      "max_score": 20,
+      "description": "Calls out (in code comment or surrounding prose) that Anthropic enforces a minimum token count for caching — breakpoints on shorter segments are silently ignored. The developer needs this to interpret a no-savings result"
+    },
+    {
+      "name": "Places the breakpoint at end of system content",
+      "max_score": 15,
+      "description": "The cacheControl annotation sits on the long stable system content, not on the volatile user turn that changes per call. Caching the wrong segment provides no savings"
+    },
+    {
+      "name": "Uses the prompt DSL builder",
+      "max_score": 15,
+      "description": "Expresses the prompt via prompt(\"...\") { ... } builder, not via plain systemPrompt = ... string parameter which has no place to attach cacheControl"
+    },
+    {
+      "name": "References observability for cache-hit verification",
+      "max_score": 10,
+      "description": "Mentions checking cache_creation_input_tokens / cache_read_input_tokens in the token-usage span (or equivalent) to confirm the cache is hitting. Without verification the developer has no signal whether the change worked"
+    },
+    {
+      "name": "Does not change the agent's model",
+      "max_score": 5,
+      "description": "Does not swap from Opus to a different Anthropic model — the developer is on Opus; caching works there. Suggesting a model swap is out of scope"
+    }
+  ]
+}

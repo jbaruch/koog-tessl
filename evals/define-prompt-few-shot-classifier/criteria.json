@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent reaches for the prompt DSL builder with interleaved user/assistant turns — the canonical Koog 1.0 few-shot shape — rather than concatenating the examples into a long systemPrompt string.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses the prompt { ... } DSL builder",
+      "max_score": 30,
+      "description": "Constructs a Prompt via the prompt(\"...\") { ... } builder. Does NOT keep concatenating examples into a single systemPrompt string — that defeats the model's few-shot pattern recognition"
+    },
+    {
+      "name": "System turn names the classification task",
+      "max_score": 15,
+      "description": "Includes a system(\"...\") call inside the builder that explains the classification task (categories: bug, praise, question, noise). The instruction sits before the examples"
+    },
+    {
+      "name": "Each example is a user/assistant pair",
+      "max_score": 30,
+      "description": "Each of the four examples is rendered as a user(...) turn followed by an assistant(...) turn — not as a single user message containing all four, not as a system message listing them"
+    },
+    {
+      "name": "Examples are inline literal strings",
+      "max_score": 10,
+      "description": "The example texts (\"App keeps crashing on Settings\", \"asdfgh\", etc.) and their expected labels (bug, praise, question, noise) appear inline in the prompt builder. Not loaded from disk or built dynamically — the developer's examples were inline"
+    },
+    {
+      "name": "Imports prompt builder from ai.koog.prompt.dsl",
+      "max_score": 10,
+      "description": "Imports the prompt builder from ai.koog.prompt.dsl (where the builder DSL lives in 1.0). Does not import from a removed pre-1.0 location"
+    },
+    {
+      "name": "Does not introduce a PromptAugmenter",
+      "max_score": 5,
+      "description": "Does not register a SystemPromptAugmenter or UserPromptAugmenter — augmenters are for runtime-injected content, not for static few-shot examples that should be part of the prompt itself"
+    }
+  ]
+}

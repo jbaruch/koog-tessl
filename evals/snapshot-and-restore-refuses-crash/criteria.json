@@ -1,0 +1,31 @@
+{
+  "context": "Negative case — tests whether the agent distinguishes caller-triggered snapshots (semantic save points, fork/replay tooling) from continuous automatic checkpointing (the Persistence feature). The developer's need is crash recovery without sprinkling save calls — that's the Persistence feature, not snapshot. The developer's word choice (\"snapshot\") points the wrong way; the tile expects the agent to surface the mismatch.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Distinguishes caller-triggered from continuous save",
+      "max_score": 25,
+      "description": "Names the contract difference between the two Koog persistence layers — snapshot is caller-triggered, the Persistence feature writes checkpoints automatically. Surfaces that \"automatic, no save calls in code\" maps to one and not the other"
+    },
+    {
+      "name": "Routes to the Persistence feature",
+      "max_score": 30,
+      "description": "Recommends the Persistence feature install path — invokes the appropriate sibling skill or names the install(Persistence) surface. Calls out that AgentCheckpointData / runFromCheckpoint give the resume behavior the developer described"
+    },
+    {
+      "name": "Does NOT recommend installing the snapshot feature",
+      "max_score": 25,
+      "description": "Does NOT produce install(Snapshot) wiring or snapshot()/runFromSnapshot() call patterns to satisfy this need. The developer explicitly does not want to add save-state calls through the code — caller-triggered snapshots would force exactly that"
+    },
+    {
+      "name": "Acknowledges the developer's word choice without capitulating",
+      "max_score": 10,
+      "description": "Engages with the developer's framing (\"snapshots so the agent recovers automatically\") and explains that the snapshot feature is not automatic. Does not just refuse without naming the mismatch"
+    },
+    {
+      "name": "Mentions the cost of frequent checkpoints",
+      "max_score": 10,
+      "description": "Notes that continuous checkpointing has overhead — every-step writes are expensive on long runs and a less aggressive schedule (every N steps, every phase boundary) is usually the right trade-off. The developer needs this to configure the feature sensibly"
+    }
+  ]
+}

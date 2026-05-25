@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent reaches for the in-process prompt-executor-cached layer with the Redis backend — the right tool for sharing LLM responses across workers — rather than confusing this with provider-side Anthropic prompt caching or rolling a bespoke cache layer.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Wraps the executor with CachedPromptExecutor",
+      "max_score": 30,
+      "description": "Wraps simpleOpenAIExecutor with CachedPromptExecutor (or equivalent prompt-executor-cached decorator). Does NOT reach for Anthropic prompt caching (provider-side, different problem) and does NOT roll a custom cache layer"
+    },
+    {
+      "name": "Picks the Redis backend",
+      "max_score": 25,
+      "description": "Uses the Redis-backed cache (e.g., RedisPromptCache). Does NOT pick in-memory (defeats the sharing requirement) or file-based (not shared across processes on different hosts)"
+    },
+    {
+      "name": "Adds both prompt-executor-cached and prompt-cache-redis dependencies",
+      "max_score": 20,
+      "description": "Adds ai.koog:prompt-executor-cached AND ai.koog:prompt-cache-redis at 1.0.0+ to build.gradle.kts. Both are needed — the executor wrapper without the backend module won't have Redis support"
+    },
+    {
+      "name": "Reads REDIS_URL from environment",
+      "max_score": 15,
+      "description": "Reads the Redis connection URL via System.getenv(\"REDIS_URL\"). Does not embed a hardcoded URL"
+    },
+    {
+      "name": "Passes the wrapped executor to AIAgent",
+      "max_score": 10,
+      "description": "The cached executor is passed as the promptExecutor parameter to AIAgent(...). The raw simpleOpenAIExecutor is not also passed separately"
+    }
+  ]
+}

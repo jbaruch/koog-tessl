@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent recognizes that the developer's stated need — a separately-configured agent exposed as a single callable surface — maps to the sub-agent-as-tool pattern, rather than merging the find agent's tools into the main agent (which would defeat the cost separation) or building a new strategy graph.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses AIAgentService.fromAgent to wrap the find agent",
+      "max_score": 30,
+      "description": "Calls AIAgentService.fromAgent(findAgent) to bridge from the AIAgent instance to a tool-capable wrapper. Does not try to read out the find agent's tools and copy them into the main agent's registry"
+    },
+    {
+      "name": "Calls createAgentTool with typed input/output",
+      "max_score": 20,
+      "description": "Calls createAgentTool<String, String>(...) (or the appropriate typed shape) on the service wrapper, producing a tool that the main agent can register"
+    },
+    {
+      "name": "Provides agentDescription and inputDescription for the LLM",
+      "max_score": 15,
+      "description": "Supplies an agentDescription (what the wrapped agent does) and inputDescription (what input to pass) — these are what the main agent's LLM reads when deciding whether to call the tool. Generic or empty descriptions don't qualify"
+    },
+    {
+      "name": "Preserves the find agent's separate configuration",
+      "max_score": 15,
+      "description": "Does not modify the find agent's construction — its model, system prompt, and tool registry stay as-is. The wrapping happens after the find agent is built, not by reconstructing it"
+    },
+    {
+      "name": "Registers the wrapped tool in the main agent's ToolRegistry",
+      "max_score": 15,
+      "description": "Adds the wrapped tool into the main agent's ToolRegistry via tool(...) (not tools(...) — the wrapped result is a single Tool, not a ToolSet). Passes the resulting registry to AIAgent(...) at construction"
+    },
+    {
+      "name": "Does not introduce a strategy graph or subgraph",
+      "max_score": 5,
+      "description": "Does not author a strategy { ... } block or a subgraphWithTask — the user wants the find agent visible as a tool to the main agent, not as a graph node"
+    }
+  ]
+}

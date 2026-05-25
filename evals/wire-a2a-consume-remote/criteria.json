@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent uses the A2A client to consume the remote agent (the right protocol for agent-to-agent calls) and wraps it as a tool so the local LLM can choose delegation per query — matching the developer's stated 'LLM decides' preference.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses A2AClient to call the remote",
+      "max_score": 30,
+      "description": "Builds an A2AClient targeting the analyst endpoint and uses it to invoke the remote. Does NOT use MCP (wrong protocol — MCP is for tool hosts, A2A is for full agents) and does NOT call the remote HTTP endpoint with a raw HTTP client"
+    },
+    {
+      "name": "Adds a2a-core and a2a-client dependencies",
+      "max_score": 20,
+      "description": "Adds both ai.koog:a2a-core and ai.koog:a2a-client at 1.0.0 or later to build.gradle.kts. Does not add a2a-server (wrong direction — this is consume, not serve)"
+    },
+    {
+      "name": "Wraps the A2A call inside a tool",
+      "max_score": 25,
+      "description": "Exposes the A2A call to the local LLM as a tool — e.g., a @Tool-annotated method that calls client.run(...). The LLM picks when to delegate; the wrapping makes the remote appear as a regular tool"
+    },
+    {
+      "name": "Reads the bearer token from the environment",
+      "max_score": 15,
+      "description": "Reads ANALYST_API_TOKEN from System.getenv and passes it to the A2A client's auth configuration. Does not embed the token literal"
+    },
+    {
+      "name": "Registers the wrapper tool with the agent",
+      "max_score": 10,
+      "description": "Adds the tool (or its ToolSet) into the local agent's ToolRegistry via the standard registry DSL. Does not mutate the registry after construction"
+    }
+  ]
+}

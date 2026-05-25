@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent reaches for nodeLLMRequestStreaming with a chunk handler — the correct streaming primitive — rather than the regular nodeLLMRequest followed by post-hoc string splitting (which doesn't actually stream).",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses nodeLLMRequestStreaming",
+      "max_score": 35,
+      "description": "Authors the strategy with nodeLLMRequestStreaming as the LLM-call node. Does NOT use nodeLLMRequest and try to split the result afterwards — that doesn't stream"
+    },
+    {
+      "name": "Supplies a chunk handler lambda",
+      "max_score": 25,
+      "description": "Passes a chunk-handler lambda to nodeLLMRequestStreaming that surfaces each chunk somewhere downstream (channel, callback, print). The handler body is not empty or TODO"
+    },
+    {
+      "name": "Names that the handler must not block",
+      "max_score": 15,
+      "description": "Calls out (in code comment or surrounding prose) that the chunk handler runs synchronously per chunk and must not block — slow handlers stall the LLM stream"
+    },
+    {
+      "name": "Wires the streaming node into a top-level strategy<...>",
+      "max_score": 15,
+      "description": "Builds the strategy with the top-level strategy<Input, Output>(\"name\") { ... } builder. Uses node delegate syntax (val xxx by nodeLLMRequestStreaming(...)) and edge() declarations"
+    },
+    {
+      "name": "Does not include tool nodes",
+      "max_score": 10,
+      "description": "The strategy does not include nodeExecuteTools or nodeLLMSendToolResults — the developer said reply is text-only and streaming doesn't compose with tool calls in the same node anyway"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent installs the Tokenizer feature with a runBudget AND picks the CompressHistory budget-exceeded action (matching the developer's stated 'try to continue by summarizing' preference) rather than the default Abort which the developer explicitly rejected.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Installs the Tokenizer feature",
+      "max_score": 25,
+      "description": "Calls install(Tokenizer) { ... } inside the AIAgent(...) trailing lambda. Does not roll a custom token-counting wrapper or check usage in tool bodies"
+    },
+    {
+      "name": "Sets a 50000 runBudget",
+      "max_score": 20,
+      "description": "Configures runBudget = 50_000 (or equivalent integer literal) inside the install block — matches the developer's stated cap"
+    },
+    {
+      "name": "Picks BudgetAction.CompressHistory",
+      "max_score": 30,
+      "description": "Sets onBudgetExceeded = BudgetAction.CompressHistory. Does NOT use BudgetAction.Abort (developer explicitly rejected this) and does NOT use DowngradeModel (the developer asked for summarization, not model swap)"
+    },
+    {
+      "name": "Adds the tokenizer dependencies",
+      "max_score": 15,
+      "description": "Adds both ai.koog:agents-features-tokenizer and ai.koog:prompt-tokenizer at 1.0.0+. Without prompt-tokenizer, the feature has no per-model tokenizer to use"
+    },
+    {
+      "name": "Does not lower the model to a cheaper one",
+      "max_score": 5,
+      "description": "Does not change llmModel away from GPT4o — the developer didn't ask to swap models, only to cap spend on the current one"
+    },
+    {
+      "name": "Notes how the cap surfaces in observability if installed",
+      "max_score": 5,
+      "description": "Mentions that if OpenTelemetry is also installed, token usage surfaces in the gen_ai.client.token.usage metric automatically. Not strictly required but helps the developer verify the cap"
+    }
+  ]
+}

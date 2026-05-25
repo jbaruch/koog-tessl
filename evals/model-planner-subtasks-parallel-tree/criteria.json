@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent reaches for the planner's PlannerNode tree (the right depth — parallel + sequential composition modeled explicitly) AND uses storage keys to track in-flight subtasks for the debugging requirement — rather than building this as a graph strategy with hand-wired conditional edges.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses PlannerNode.parallel inside PlannerNode.sequential",
+      "max_score": 30,
+      "description": "Composes the plan via PlannerNode.sequential(...) wrapping PlannerNode.parallel(...) — explicit tree composition. Does NOT model the angles as conditional edges in a strategy { ... } graph (which serializes them) and does NOT use PlannerNode.sequential alone (would serialize the angles)"
+    },
+    {
+      "name": "Builds the agent with PlannerAIAgent / Planners.*",
+      "max_score": 20,
+      "description": "Constructs the agent through the top-level AIAgent(...) factory with a strategy from Planners.llmBased or AIAgentPlannerStrategy(..., planner). Does NOT use GraphAIAgent (which would mean hand-rolling planner behavior in a graph)"
+    },
+    {
+      "name": "Tracks current subtask via storage key",
+      "max_score": 20,
+      "description": "Declares a typed storage key (createStorageKey<PlannerNode.Builder.Reference>(\"...\")) and stores the current subtask reference on entry. Without this the debugging requirement (\"know which subtask is executing\") is unmet"
+    },
+    {
+      "name": "Adds the planner module dependency",
+      "max_score": 15,
+      "description": "Adds ai.koog:agents-planner at 1.0.0+ to build.gradle.kts. The umbrella does not include it"
+    },
+    {
+      "name": "Sets maxIterations well above the default",
+      "max_score": 10,
+      "description": "Raises maxIterations significantly above the factory default of 50 (e.g., 200+). Each subtask plus the planning step costs multiple iterations; a tree of 4 angles plus composition needs much more than 50"
+    },
+    {
+      "name": "Does not over-engineer with graph subgraphs",
+      "max_score": 5,
+      "description": "Does not author a strategy { ... } block with subgraphWithTask on top of the planner — the planner already handles the tree internally; adding subgraphs on top is double-modeling"
+    }
+  ]
+}

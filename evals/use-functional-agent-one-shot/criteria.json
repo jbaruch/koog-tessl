@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent reaches for the FunctionalAIAgent factory (right shape for a one-shot text transformation with no topology) rather than the default GraphAIAgent or a custom strategy<...>, which would be over-engineering for the developer's explicitly minimal need.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses the functional-agent factory",
+      "max_score": 35,
+      "description": "Constructs via AIAgent.functional(...) (or equivalent functional factory) with an AIAgentFunctionalStrategy. Does NOT use the default AIAgent(...) graph factory and does NOT author a strategy<String, String>(\"...\") block — both would be over-engineering for the developer's stated minimal need"
+    },
+    {
+      "name": "Strategy block is a single suspending block",
+      "max_score": 25,
+      "description": "The functional strategy body is a single suspending lambda that calls the LLM and returns the result. Does not contain a sub-graph, does not split work across multiple nodes (there are no nodes in a functional agent)"
+    },
+    {
+      "name": "Trims the LLM response inside the block",
+      "max_score": 15,
+      "description": "The strategy body calls .trim() (or equivalent whitespace-trimming) on the LLM response before returning. The developer asked for this explicitly"
+    },
+    {
+      "name": "Includes the system prompt for formal-English rewriting",
+      "max_score": 10,
+      "description": "Passes a systemPrompt to the factory that instructs the LLM to rewrite into formal English. Does not leave systemPrompt blank or unrelated to the task"
+    },
+    {
+      "name": "Reads OPENAI_API_KEY from environment",
+      "max_score": 10,
+      "description": "Reads the OpenAI key via System.getenv. Does not embed the key literal"
+    },
+    {
+      "name": "No tools registered",
+      "max_score": 5,
+      "description": "Does not pass a toolRegistry to the factory — the developer said no tools. The functional shape has no use for tools when the strategy is one-shot text-in-text-out"
+    }
+  ]
+}

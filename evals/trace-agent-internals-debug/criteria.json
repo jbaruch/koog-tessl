@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent reaches for the trace feature (the deep-diagnostic layer that surfaces edge predicate evaluations and node entries) rather than the event-handler feature (high-level callbacks, won't show predicate evaluations) or expanding OpenTelemetry coverage (wrong shape — production signal, not local diagnostics).",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Installs the Trace feature",
+      "max_score": 30,
+      "description": "Calls install(Trace) { ... } inside the AIAgent(...) trailing lambda. Does NOT install the event-handler (won't surface edge-predicate evaluations) and does NOT extend OpenTelemetry (wrong layer for local diagnostic deep-dives)"
+    },
+    {
+      "name": "Adds the agents-features-trace dependency",
+      "max_score": 20,
+      "description": "Adds ai.koog:agents-features-trace at 1.0.0+. Does not add other observability modules in lieu of it"
+    },
+    {
+      "name": "Captures EDGE_EVALUATION events",
+      "max_score": 25,
+      "description": "Configures the trace feature to include edge-evaluation events (e.g., includeCategories with EDGE_EVALUATION, or accepts the default-on behavior if it's already included). Without this, the developer cannot see which predicate is misfiring on the loop edge"
+    },
+    {
+      "name": "Captures NODE_ENTRY events",
+      "max_score": 15,
+      "description": "Captures node entry events so the trace shows the loop pattern (which two nodes the agent is bouncing between). Without this, the loop is invisible in the trace"
+    },
+    {
+      "name": "Sends trace to a local sink",
+      "max_score": 10,
+      "description": "Configures the sink as stdout or a local file (TraceSink.stdout() or TraceSink.file(...)) — not a network/cloud sink. The developer asked for line-by-line local logs"
+    }
+  ]
+}

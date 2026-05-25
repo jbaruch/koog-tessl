@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent reaches for the event handler feature for human-readable per-step output — the right tool for development/demo surface — rather than reaching for OpenTelemetry (production signal, overkill here) or hand-rolling println scaffolding inside tool bodies.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Installs the event-handler feature",
+      "max_score": 30,
+      "description": "Calls handleEvents { ... } inside the AIAgent(...) trailing lambda. Does NOT install OpenTelemetry (overkill for stdout demo output and adds collector setup) and does NOT add println calls inside each tool body"
+    },
+    {
+      "name": "Adds the agents-features-event-handler dependency",
+      "max_score": 20,
+      "description": "Adds ai.koog:agents-features-event-handler to build.gradle.kts at 1.0.0 or later. The umbrella does not include the event handler"
+    },
+    {
+      "name": "Subscribes to onToolCallStarting",
+      "max_score": 20,
+      "description": "Registers an onToolCallStarting handler that prints tool name and arguments. The start-side callback is essential for the live demo trace"
+    },
+    {
+      "name": "Subscribes to onToolCallFinished",
+      "max_score": 15,
+      "description": "Registers an onToolCallFinished handler that prints the tool result (or at minimum a completion marker). The developer asked for arrows indicating start vs end — both sides need handlers"
+    },
+    {
+      "name": "Uses distinct visual markers for start vs end",
+      "max_score": 10,
+      "description": "Uses visually distinct prefixes between start and end output (e.g., → vs ←, or [start] vs [end]) so the audience can read the trace at scroll speed"
+    },
+    {
+      "name": "Does not also install OpenTelemetry",
+      "max_score": 5,
+      "description": "Does not add OpenTelemetry on top — the developer explicitly said no Langfuse/OTel for this demo. Adding it would require collector setup and isn't requested"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "context": "Negative case — tests whether the agent recognizes the developer's workflow has a known compile-time topology (three fixed phases, LLM only picks tools within each phase) and routes them to the graph DSL instead of building a planner. A planner here would be over-engineering: extra LLM round-trips for planning decisions the developer already made, with no autonomy benefit.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Names the topology as the disqualifying signal",
+      "max_score": 25,
+      "description": "Identifies in prose that the developer's workflow has a fixed phase ordering known at design time — not that the LLM picks tools within phases. Surfaces the test from the Koog tile: the planner is for runtime-decided sequencing, not for tool selection within fixed steps"
+    },
+    {
+      "name": "Redirects to the graph DSL",
+      "max_score": 30,
+      "description": "Recommends authoring a graph strategy (or invokes the appropriate sibling skill) instead of installing the planner module. Names the strategy DSL specifically — not a vague \"different approach\""
+    },
+    {
+      "name": "Does not install agents-planner",
+      "max_score": 20,
+      "description": "Does NOT add ai.koog:agents-planner to build.gradle.kts and does NOT produce Planners.llmBased / Planners.goap factory calls. Installing the wrong module on the developer's say-so without surfacing the mismatch is the failure mode this scenario tests"
+    },
+    {
+      "name": "Acknowledges the developer's framing without capitulating",
+      "max_score": 15,
+      "description": "Engages with the developer's stated reason (\"letting the agent plan its work sounded right\") and explains the distinction between LLM-picks-tools (graph) and LLM-picks-step-sequence (planner). Does not just refuse without explanation"
+    },
+    {
+      "name": "Mentions the cost penalty of an unwarranted planner",
+      "max_score": 10,
+      "description": "Notes that a planner adds an LLM round-trip per planning decision — for a fixed three-phase workflow that's wasted cost with no autonomy benefit. The developer needs this to internalize the recommendation"
+    }
+  ]
+}

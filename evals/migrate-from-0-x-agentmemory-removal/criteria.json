@@ -1,0 +1,41 @@
+{
+  "context": "Tests whether the migration correctly identifies every breaking change visible in the 0.x snippet — the AgentMemory removal, the AIAgent.invoke factory shift, the LongTermMemory renames, the JDK bump, and adds the new dependency module — rather than just doing a single line change and missing the cascade.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Replaces AgentMemory with LongTermMemory",
+      "max_score": 25,
+      "description": "Removes the install(AgentMemory) call and replaces with install(LongTermMemory) — AgentMemory was removed in 1.0. Does not leave install(AgentMemory) intact or comment it out without a replacement"
+    },
+    {
+      "name": "Renames queryExtractor and extractionStrategy",
+      "max_score": 15,
+      "description": "Renames queryExtractor → searchQueryProvider and extractionStrategy → documentExtractor inside the install block. The corresponding type references update accordingly"
+    },
+    {
+      "name": "Removes IngestionTiming",
+      "max_score": 10,
+      "description": "Removes the ingestionTiming = ... line — IngestionTiming was removed in 1.0; strategies now manage ingestion timing internally. Does not leave the dead reference"
+    },
+    {
+      "name": "Drops .invoke from the AIAgent call",
+      "max_score": 15,
+      "description": "Changes AIAgent.invoke(...) to AIAgent(...) — the companion invoke was removed in 1.0; the top-level factory has the same call site. Does not leave AIAgent.invoke or substitute concrete subtype constructors"
+    },
+    {
+      "name": "Adds the new LongTermMemory dependency",
+      "max_score": 15,
+      "description": "Adds ai.koog:agents-features-longterm-memory at 1.0.0+ to the build (and the AWS backend module if using Bedrock). The umbrella koog-agents does not include this feature"
+    },
+    {
+      "name": "Bumps JDK target to 17",
+      "max_score": 10,
+      "description": "Updates the JVM toolchain to 17 — Koog 1.0 requires JDK 17 minimum. The current JDK 11 target compiles against 0.x but fails against 1.0"
+    },
+    {
+      "name": "Updates all Koog coordinates to 1.0+",
+      "max_score": 10,
+      "description": "Bumps every ai.koog:* artifact in build.gradle.kts to 1.0.0 or later. Does not leave any artifact at the 0.7.x version"
+    }
+  ]
+}

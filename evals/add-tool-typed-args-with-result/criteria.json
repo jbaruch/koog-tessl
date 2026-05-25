@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent reaches for the typed Tool<TArgs,TResult> registration style when the user explicitly needs typed input/output preserved, rather than stuffing the work into the annotated ToolSet path and losing the type signature.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Subclasses Tool<TArgs, TResult>",
+      "max_score": 30,
+      "description": "Creates a class that extends Tool<AccountLookupRequest, AccountLookupResult> with the typed args and result types preserved. Does NOT use the @Tool / ToolSet annotated path (which would force a String return) and does NOT subclass ToolBase directly (which is over-reach when raw ToolCallMetadata isn't needed)"
+    },
+    {
+      "name": "Declares a ToolDescriptor",
+      "max_score": 20,
+      "description": "Provides a ToolDescriptor with at least a name and description for the LLM to consume. Without it the tool is registered without a schema the LLM can use"
+    },
+    {
+      "name": "Implements suspend execute(args) returning the typed result",
+      "max_score": 20,
+      "description": "Overrides execute(args: AccountLookupRequest): AccountLookupResult as a suspend function, calling the existing queryAccount(req) inside. Does not flatten the return type to String or convert it to JSON-as-String"
+    },
+    {
+      "name": "Registers with the ToolRegistry DSL",
+      "max_score": 15,
+      "description": "Adds the tool via the ToolRegistry { tool(AccountLookupTool()) } DSL form and passes the registry as the toolRegistry parameter to AIAgent(...). Not by mutating an existing registry post-construction"
+    },
+    {
+      "name": "Reuses the existing @Serializable data classes",
+      "max_score": 10,
+      "description": "Uses the developer's existing AccountLookupRequest / AccountLookupResult types as the tool's arg and result types. Does not introduce parallel data classes or rewrite them"
+    },
+    {
+      "name": "Does not introduce a ToolSet wrapper",
+      "max_score": 5,
+      "description": "Does not wrap the typed Tool subclass inside a ToolSet — ToolSet is the annotated path and is the wrong abstraction here"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent picks the right Koog 1.0 API for history compression (a writeSession-locked replaceHistoryWithTLDR call at a deliberate boundary) rather than reaching for an external string-manipulation approach or compressing on every node.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Calls replaceHistoryWithTLDR inside llm.writeSession",
+      "max_score": 35,
+      "description": "Invokes replaceHistoryWithTLDR() (or an equivalent HistoryCompressionStrategy invocation) inside llm.writeSession { ... }. Does NOT manipulate the prompt history outside a write session — the session lock is mandatory for safe mutation"
+    },
+    {
+      "name": "Compresses only at the boundary node, not every node",
+      "max_score": 25,
+      "description": "The compression call appears in exactly one place — the boundary node the developer identified. Does NOT add per-node compression that would summarize away each step's findings"
+    },
+    {
+      "name": "Picks WholeHistory or equivalent TL;DR strategy",
+      "max_score": 15,
+      "description": "Uses HistoryCompressionStrategy.WholeHistory (the TL;DR-everything variant) or replaceHistoryWithTLDR which maps to it. Not FromLastNMessages (which keeps a sliding window — different semantics) or NoCompression"
+    },
+    {
+      "name": "Does not introduce LongTermMemory",
+      "max_score": 15,
+      "description": "Does not install the LongTermMemory feature — the developer's need is within-run compression, not cross-session memory. Adding LongTermMemory would be wrong scope and an unjustified dependency"
+    },
+    {
+      "name": "Compression happens before the next LLM call in drafting",
+      "max_score": 10,
+      "description": "The replaceHistoryWithTLDR happens before the drafting phase's first nodeLLMRequest, so the drafting LLM sees the summarized history. Calling it after the drafting node would waste the call"
+    }
+  ]
+}

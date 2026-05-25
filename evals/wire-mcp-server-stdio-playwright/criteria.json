@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent picks the stdio (process-based) MCP transport when the user explicitly wants the server launched as a local subprocess — rather than reaching for HTTP transports that don't apply here.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses the process-based MCP transport",
+      "max_score": 30,
+      "description": "Builds the MCP registry using McpToolRegistryProvider.fromProcess(process). Does NOT use streamableHttp or fromSseUrl — the user explicitly chose stdio against a local subprocess"
+    },
+    {
+      "name": "Launches the process with ProcessBuilder",
+      "max_score": 20,
+      "description": "Creates the subprocess via ProcessBuilder(\"npx\", \"-y\", \"@playwright/mcp@latest\").start() (or an equivalent constructor producing a java.lang.Process). Each argument is its own element in the command list — does not pass the whole command as a single shell-quoted string"
+    },
+    {
+      "name": "Adds the agents-mcp dependency",
+      "max_score": 20,
+      "description": "Adds ai.koog:agents-mcp at 1.0.0 or later to build.gradle.kts. The umbrella koog-agents does not include MCP, so the dependency must be added explicitly"
+    },
+    {
+      "name": "Builds the registry before constructing the agent",
+      "max_score": 15,
+      "description": "Calls McpToolRegistryProvider.fromProcess(...) and assigns it to a variable BEFORE the AIAgent(...) call, then passes that variable as toolRegistry. Does not try to add MCP tools after the agent is constructed"
+    },
+    {
+      "name": "Calls the suspending builder inside a coroutine context",
+      "max_score": 10,
+      "description": "The fromProcess builder runs inside the existing runBlocking { ... } (or another coroutine scope), since it is a suspending call"
+    },
+    {
+      "name": "Does not import Ktor or HTTP-client types",
+      "max_score": 5,
+      "description": "The stdio transport has no HTTP component — the produced file should not import Ktor HttpClient, OkHttp, or any HTTP-transport configuration the agent does not need"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent wires RAG as a tool (the LLM decides when to retrieve, matching the developer's stated preference) rather than as a prompt augmenter (which would augment every input — explicitly rejected).",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Exposes retrieval as a Tool, not as an augmenter",
+      "max_score": 30,
+      "description": "Wraps the vector store search in a tool that the LLM can invoke — typically a @Tool-annotated ToolSet method. Does NOT install a UserPromptAugmenter or SystemPromptAugmenter that would inject retrieval into every input — the developer explicitly rejected that"
+    },
+    {
+      "name": "Builds an embedder from a provider",
+      "max_score": 15,
+      "description": "Constructs an embedder backed by a provider (e.g., OpenAIEmbedder against an embedding model). Does not skip embedder construction or use a placeholder TODO"
+    },
+    {
+      "name": "Builds a vector store and indexes documents",
+      "max_score": 20,
+      "description": "Constructs a VectorStore (e.g., InMemoryVectorStore) and indexes the developer's existing List<Document>, calling store.add(...) for each. Does not require a pre-existing index"
+    },
+    {
+      "name": "Adds the RAG and embeddings dependencies",
+      "max_score": 15,
+      "description": "Adds ai.koog:rag-base, ai.koog:rag-vector, ai.koog:embeddings-base, and ai.koog:embeddings-llm at 1.0.0+. Does not skip embeddings-llm (the embedder needs it)"
+    },
+    {
+      "name": "Registers the search tool with the agent's ToolRegistry",
+      "max_score": 10,
+      "description": "Adds the search tool to a ToolRegistry that's passed to AIAgent(...) as toolRegistry. Does not mutate the registry after construction"
+    },
+    {
+      "name": "Search tool returns formatted results, not raw vector hits",
+      "max_score": 10,
+      "description": "The search tool returns text (e.g., concatenated top-K results with source paths) — not raw VectorStore.SearchResult objects that the LLM wouldn't understand. Formatting can be terse but must produce LLM-readable output"
+    }
+  ]
+}

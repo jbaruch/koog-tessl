@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent reaches for subgraphs with task and verification — the canonical Koog 1.0 pattern for the generate/verify/fix shape — rather than building a single god-node with branching or hand-rolling a verify loop with raw nodeLLMRequest nodes.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses subgraphWithTask and subgraphWithVerification",
+      "max_score": 30,
+      "description": "Each of the three phases is expressed as its own subgraph via subgraphWithTask / subgraphWithVerification. Does NOT inline the three phases as nodeLLMRequest nodes inside a single strategy block"
+    },
+    {
+      "name": "Conditional edge from verify drives the loop",
+      "max_score": 20,
+      "description": "Includes an edge from verify to fix on the condition that verification failed, and an edge from verify to finish on the condition that verification succeeded. The branch is in edge predicates, not inside the verify node body"
+    },
+    {
+      "name": "Fix loops back to verify",
+      "max_score": 15,
+      "description": "Includes an edge from fix back to verify, so the workflow iterates until verification passes. Not a one-shot fix"
+    },
+    {
+      "name": "Each subgraph has its own tools set",
+      "max_score": 15,
+      "description": "Passes a distinct tools argument to each subgraphWithTask/subgraphWithVerification call — generator gets read-only tools, verifier gets read+grep, fixer gets read+edit+grep"
+    },
+    {
+      "name": "Verifier uses a cheaper model than fixer",
+      "max_score": 10,
+      "description": "The verifier subgraph is configured with a smaller/cheaper model (e.g., Haiku/Flash class) and the fixer with a larger one (Opus/GPT-5 class) — reflecting the developer's stated cost preference"
+    },
+    {
+      "name": "Top-level strategy<Input, Output>(name) declaration",
+      "max_score": 10,
+      "description": "Uses the top-level strategy<...>(\"...\") builder function from the DSL (not the removed AIAgentStrategyBuilder.invoke or similar) with reified Input/Output type parameters"
+    }
+  ]
+}

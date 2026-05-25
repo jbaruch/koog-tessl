@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent picks the chat-history persistence layer (the right one for resuming conversations by user) rather than confusing it with generic agent persistence (crash recovery) or LongTermMemory (fact retrieval).",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Installs the JDBC chat-history feature",
+      "max_score": 30,
+      "description": "Calls install(JdbcChatHistory) (or equivalent chat-history-jdbc API) inside the AIAgent(...) trailing lambda. Does NOT install Persistence (wrong layer — that's crash recovery, not conversation resume) and does NOT install LongTermMemory (wrong layer — that's fact retrieval, not message replay)"
+    },
+    {
+      "name": "Adds the JDBC chat-history dependency",
+      "max_score": 20,
+      "description": "Adds ai.koog:agents-features-chat-history-jdbc at 1.0.0+. Does not add chat-history-aws (developer named Postgres) and does not add agents-features-persistence-jdbc (wrong feature for this need)"
+    },
+    {
+      "name": "Reads DB credentials from environment",
+      "max_score": 15,
+      "description": "Reads DB_URL, DB_USER, DB_PASSWORD from System.getenv — none of the values are inlined. Also includes a Postgres JDBC driver in the dependencies (Koog does not bundle drivers)"
+    },
+    {
+      "name": "Threads userId as sessionId on agent.run",
+      "max_score": 25,
+      "description": "Passes sessionId = userId (the developer's user identifier) on agent.run(...) calls. Does NOT generate a fresh UUID per request (would defeat the resume) and does NOT store sessionId inside the agent's storage (which is run-scoped, not session-scoped)"
+    },
+    {
+      "name": "Does not require user to thread message history manually",
+      "max_score": 10,
+      "description": "Does not require the application code to load prior messages and prepend them to the prompt — the feature handles that. The route/handler just calls agent.run(input, sessionId = userId)"
+    }
+  ]
+}

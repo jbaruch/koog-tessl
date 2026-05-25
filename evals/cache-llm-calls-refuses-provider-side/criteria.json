@@ -1,0 +1,31 @@
+{
+  "context": "Negative case — tests whether the agent identifies the developer's situation (stable system prompt content with unique per-call user inputs) as a provider-side caching problem, not a response caching problem, and routes them to the right tile skill. Wrapping the executor in an in-process response cache here would be wrong: responses are not actually repeated, so the cache would never hit and the developer would conclude caching doesn't work.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Names the cache-vs-response distinction",
+      "max_score": 25,
+      "description": "Surfaces that there are two different caching layers — provider-side reduction on stable prompt prefixes vs. in-process avoidance of duplicate API calls — and identifies which one this developer needs. Without this distinction the developer cannot decide between offerings"
+    },
+    {
+      "name": "Recommends the provider-side caching path",
+      "max_score": 30,
+      "description": "Recommends the Anthropic prompt caching surface (cacheControl breakpoints on the system content) — or invokes the appropriate sibling skill. Does not invent a custom cache header injection and does not point at a generic OpenTelemetry feature"
+    },
+    {
+      "name": "Does not wrap the executor in an in-process cache",
+      "max_score": 25,
+      "description": "Does NOT produce a CachedPromptExecutor / FilePromptCache / RedisPromptCache wrapper around the developer's executor. The user inputs are unique per call so the cache key would never hit — implementing this would mislead the developer into thinking caching is broken"
+    },
+    {
+      "name": "Acknowledges the framing without capitulating",
+      "max_score": 10,
+      "description": "Engages with the developer's phrasing (\"cache the LLM responses\") and explains that what they actually want bills the API at a reduced rate rather than skipping the API. Does not just refuse without naming the mismatch"
+    },
+    {
+      "name": "Mentions Anthropic's minimum-token requirement",
+      "max_score": 10,
+      "description": "Notes that Anthropic enforces a minimum token threshold for caching to take effect — the developer's multi-thousand-word prompt likely qualifies, but breakpoints on shorter content are silently ignored. They need this so a no-savings outcome isn't a surprise"
+    }
+  ]
+}

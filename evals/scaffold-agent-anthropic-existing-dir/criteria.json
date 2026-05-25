@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the skill correctly swaps provider-specific surfaces when the user picks Anthropic instead of the more common OpenAI default — executor factory, model selector, and environment variable name all change in lockstep.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses simpleAnthropicExecutor",
+      "max_score": 25,
+      "description": "Main.kt's promptExecutor is built with simpleAnthropicExecutor (not simpleOpenAIExecutor or any other provider factory)"
+    },
+    {
+      "name": "Selects a current Anthropic model",
+      "max_score": 20,
+      "description": "llmModel is an AnthropicModels.* entry that exists in 1.0 (e.g., Opus_4_7 or Opus_4_6, NOT the removed Haiku_3 or any other retired Anthropic model entry)"
+    },
+    {
+      "name": "Reads ANTHROPIC_API_KEY from the environment",
+      "max_score": 20,
+      "description": "Reads the Anthropic-specific environment variable (ANTHROPIC_API_KEY) from System.getenv, not OPENAI_API_KEY copy-pasted from a template, not a hardcoded literal"
+    },
+    {
+      "name": "Accepts the existing-empty-directory state without overwrite",
+      "max_score": 15,
+      "description": "Treats the existing empty directory as a valid scaffold target — does not refuse, does not delete, does not ask the user to recreate it"
+    },
+    {
+      "name": "Uses 1.0+ umbrella coordinate",
+      "max_score": 10,
+      "description": "build.gradle.kts uses ai.koog:koog-agents at 1.0.0 or later"
+    },
+    {
+      "name": "Top-level AIAgent factory call",
+      "max_score": 10,
+      "description": "Main.kt calls AIAgent(...) as a top-level factory function, not a companion-invoke or concrete subtype constructor"
+    }
+  ]
+}

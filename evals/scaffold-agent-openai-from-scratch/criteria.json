@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the skill produces a Koog 1.0-correct scaffold for an OpenAI-backed agent: current artifact coordinates, top-level factory, JDK 17 toolchain, env-var-driven key, and absence of redundant defaults.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses 1.0+ umbrella coordinate",
+      "max_score": 20,
+      "description": "build.gradle.kts declares an `ai.koog:koog-agents` dependency at version 1.0.0 or later. Not 0.7.x, not a partial set of submodules when the umbrella covers them"
+    },
+    {
+      "name": "Targets JDK 17 toolchain",
+      "max_score": 10,
+      "description": "Configures a Kotlin JVM toolchain at JDK 17 (jvmToolchain(17) or kotlin { jvmToolchain(17) }). 1.0 requires it"
+    },
+    {
+      "name": "Uses top-level AIAgent factory",
+      "max_score": 15,
+      "description": "Main.kt calls AIAgent(...) as a top-level factory function with named parameters (promptExecutor, llmModel, systemPrompt) — not AIAgent.invoke, not a concrete subtype constructor"
+    },
+    {
+      "name": "Reads API key from environment",
+      "max_score": 15,
+      "description": "Reads OPENAI_API_KEY (or equivalent) from System.getenv(...). The literal API key is never embedded in the source file"
+    },
+    {
+      "name": "Wires simpleOpenAIExecutor and a current OpenAI model",
+      "max_score": 15,
+      "description": "Uses simpleOpenAIExecutor as the prompt executor and selects an OpenAIModels.Chat.* entry that exists in 1.0 (e.g., GPT4o, GPT5 family) — not a retired model"
+    },
+    {
+      "name": "Omits the default singleRunStrategy",
+      "max_score": 10,
+      "description": "Does NOT pass strategy = singleRunStrategy() to the factory — it's the default; explicit listing adds noise and the rules in this tile discourage it for the demo scaffold"
+    },
+    {
+      "name": "Runs the agent inside runBlocking",
+      "max_score": 5,
+      "description": "main() uses runBlocking { ... } (or an equivalent coroutine entry point) since agent.run is suspending"
+    },
+    {
+      "name": "Initializes git in the new directory",
+      "max_score": 5,
+      "description": "Runs git init in the target directory and includes a sensible .gitignore covering Gradle output (build/, .gradle/) and IDE files"
+    },
+    {
+      "name": "Application plugin wired with mainClass",
+      "max_score": 5,
+      "description": "build.gradle.kts applies the application plugin and sets mainClass.set(\"...\") so `./gradlew run` works"
+    }
+  ]
+}

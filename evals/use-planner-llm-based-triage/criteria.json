@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent recognizes the developer's described shape — runtime-dependent step ordering — as the fit for an LLM-based planner, and wires it correctly with the separate planner module dependency and a sensibly raised maxIterations.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Picks the LLM-based planner primitive",
+      "max_score": 30,
+      "description": "Uses Planners.llmBased(...) (or Planners.llmBasedWithCritic) to construct the strategy. Does NOT build a hand-wired graph DSL with conditional edges, and does NOT use GOAP — neither fits the runtime-dependent shape the developer described"
+    },
+    {
+      "name": "Adds the separate planner module dependency",
+      "max_score": 20,
+      "description": "Adds ai.koog:agents-planner to build.gradle.kts at 1.0.0 or later — the planner lives in its own module since 1.0, the umbrella does not include it"
+    },
+    {
+      "name": "Passes the planner as the strategy parameter",
+      "max_score": 15,
+      "description": "Passes the constructed planner strategy as the strategy = ... named parameter to the top-level AIAgent(...) factory"
+    },
+    {
+      "name": "Sets a much higher maxIterations than the default",
+      "max_score": 15,
+      "description": "Overrides maxIterations significantly above the factory default of 50 (e.g., 200+, the in-repo planner example uses 400). The default would exhaust before the planner finishes for non-trivial cases"
+    },
+    {
+      "name": "Includes the lookup tools in the registry",
+      "max_score": 10,
+      "description": "Constructs a ToolRegistry that contains the outage-lookup and account-lookup tools so the planner has options to chain — the planner's freedom is meaningless without tools to choose from"
+    },
+    {
+      "name": "Uses top-level AIAgent factory",
+      "max_score": 10,
+      "description": "Constructs the agent via top-level AIAgent(...) factory, not via concrete subtype constructors or removed companion-invoke forms"
+    }
+  ]
+}

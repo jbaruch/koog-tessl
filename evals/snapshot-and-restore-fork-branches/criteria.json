@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent reaches for the Snapshot feature (caller-triggered save points — the right fit for the explicit fork shape the developer described) rather than the Persistence feature (automatic checkpoint loop — wrong shape for explicit fork-and-compare).",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Installs the Snapshot feature",
+      "max_score": 30,
+      "description": "Calls install(Snapshot) { ... } inside the AIAgent(...) trailing lambda. Does NOT install Persistence — that's continuous automatic checkpointing, wrong shape for the explicit save-and-fork use case the developer described"
+    },
+    {
+      "name": "Adds the agents-features-snapshot dependency",
+      "max_score": 15,
+      "description": "Adds ai.koog:agents-features-snapshot at 1.0.0+ to build.gradle.kts. Does not add agents-features-persistence-* (wrong feature)"
+    },
+    {
+      "name": "Calls snapshot() at the decision point",
+      "max_score": 20,
+      "description": "Calls snapshot() inside the node body at the developer's chosen decision point, capturing the snapshot ID for later use. The call is explicit, not at every node"
+    },
+    {
+      "name": "Demonstrates two runFromSnapshot calls",
+      "max_score": 25,
+      "description": "Shows two distinct runFromSnapshot calls from the same snapshot ID with different additional inputs — the fork. Does not show a single resume call (which would not demonstrate the fork)"
+    },
+    {
+      "name": "Notes serializability requirement",
+      "max_score": 10,
+      "description": "Calls out (in code comment or surrounding prose) that snapshot values are serialized — any AIAgentStorage entries must be @Serializable or snapshotting breaks silently"
+    }
+  ]
+}

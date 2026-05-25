@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent picks the top-level responseProcessor path (the simplest one, fitting the default-strategy case) rather than over-engineering with a custom strategy that contains a nodeLLMRequestStructured.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses responseProcessor on the factory",
+      "max_score": 35,
+      "description": "Passes a responseProcessor parameter to AIAgent(...) that produces an IssueClassification result. Does NOT author a custom strategy with nodeLLMRequestStructured — that would be over-engineering since the default strategy suffices"
+    },
+    {
+      "name": "Parameterizes AIAgent with the typed Output",
+      "max_score": 25,
+      "description": "The AIAgent type is AIAgent<String, IssueClassification> (or equivalent typed Input/Output parameterization) so agent.run(...) returns IssueClassification directly — not String"
+    },
+    {
+      "name": "Reuses the developer's data class verbatim",
+      "max_score": 15,
+      "description": "Uses the existing IssueClassification @Serializable data class as the typed output. Does not redeclare it, rename it, or introduce a parallel type"
+    },
+    {
+      "name": "Drops the regex parsing",
+      "max_score": 15,
+      "description": "Removes (or at minimum unambiguously marks for removal) the downstream regex parsing — the typed return makes it obsolete. Leaving the regex in produces an unused code path that masks the migration"
+    },
+    {
+      "name": "Does not introduce a custom strategy",
+      "max_score": 10,
+      "description": "Does not author a strategy<...> block with nodeLLMRequestStructured. The default singleRunStrategy plus a responseProcessor is the right path for this case"
+    }
+  ]
+}

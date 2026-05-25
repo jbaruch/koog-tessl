@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent picks ACP (the right protocol — designed for bidirectional client-driven control like cancellation) rather than A2A (rpc-shaped, weaker cancellation story) or MCP (tool host, not the agent itself), AND addresses the cooperative-cancellation requirement inside the long-running tool.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Installs the ACP feature",
+      "max_score": 25,
+      "description": "Calls install(ACP) { ... } inside the AIAgent(...) trailing lambda. Does NOT use A2A (rpc-shaped — weaker cancellation) or MCP (wrong protocol — exposes tools, not the agent itself)"
+    },
+    {
+      "name": "Adds the agents-features-acp dependency",
+      "max_score": 15,
+      "description": "Adds ai.koog:agents-features-acp to build.gradle.kts at 1.0.0 or later"
+    },
+    {
+      "name": "Makes the long-running tool honor cancellation",
+      "max_score": 30,
+      "description": "Modifies analyzeRepository (or wraps it) to call coroutineContext.ensureActive() at safe points inside the walk — every N files, every chunk, every iteration. Without this the tool would keep running after the agent is cancelled, defeating the protocol"
+    },
+    {
+      "name": "Notes that catching CancellationException would defeat cancel",
+      "max_score": 15,
+      "description": "Calls out (in code comment or surrounding prose) that catch (e: CancellationException) blocks must rethrow — swallowing them inside a tool body defeats the cancel signal that ACP propagates through coroutine cancellation"
+    },
+    {
+      "name": "Mentions the example or feature module's API",
+      "max_score": 10,
+      "description": "References either the example (examples/acp-agent) or the feature module's configuration surface (endpoint, capability flags) — not a hand-rolled HTTP protocol"
+    },
+    {
+      "name": "Does not block on coroutine internals",
+      "max_score": 5,
+      "description": "Does not introduce Thread.sleep, Thread.interrupt, or any non-coroutine cancellation mechanism — ACP cancellation propagates through coroutine cancellation, not raw threads"
+    }
+  ]
+}

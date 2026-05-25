@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent reaches for the agents-test mocked-executor pattern with scripted responses and an event-handler recorder to assert tool sequences — rather than hitting a real LLM, mocking individual tool calls instead of the LLM, or asserting on internal agent state.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Adds agents-test as testImplementation",
+      "max_score": 15,
+      "description": "Adds ai.koog:agents-test to build.gradle.kts under testImplementation (not implementation). The test dependency must never leak into production classpath"
+    },
+    {
+      "name": "Uses a scripted/mocked prompt executor",
+      "max_score": 30,
+      "description": "Replaces the real provider executor (simpleOpenAIExecutor or similar) with a test executor that scripts the LLM's responses — first a tool call to lookup_priority, then a text reply. Does NOT call a real LLM, does NOT mock individual tool methods to fake the LLM's behavior"
+    },
+    {
+      "name": "Records tool-call sequence via handleEvents",
+      "max_score": 25,
+      "description": "Installs handleEvents with an onToolCallStarting (or equivalent) listener that records each tool name. The assertion compares the recorded list to the expected sequence — assertions on observable behavior, not internal state"
+    },
+    {
+      "name": "Asserts ordering — lookup_priority before classification",
+      "max_score": 15,
+      "description": "The test asserts that the recorded tool sequence has lookup_priority called first, before the final text reply is produced. Does not just check that the tool was called at all (which wouldn't prove ordering)"
+    },
+    {
+      "name": "Tools run their real implementations",
+      "max_score": 10,
+      "description": "The tools registered in the agent's ToolRegistry use their real implementations (or a thin test double at the network boundary inside the tool — not at the tool interface). The LLM is what gets mocked, not the tool surface"
+    },
+    {
+      "name": "Single agent.run call per test",
+      "max_score": 5,
+      "description": "The test invokes agent.run(...) once with the test input. Does not loop, does not retry, does not call run multiple times for one assertion"
+    }
+  ]
+}

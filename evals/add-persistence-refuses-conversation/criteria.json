@@ -1,0 +1,31 @@
+{
+  "context": "Negative case — tests whether the agent distinguishes per-user conversation resume (chat-history-jdbc territory) from generic agent checkpoint/resume (Persistence feature territory). The developer used the word \"persistence\" but the actual need is message-history persistence keyed by session, not crash-recovery checkpoints of agent run state. Installing the Persistence feature would not solve the problem.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Identifies the three persistence layers in Koog",
+      "max_score": 25,
+      "description": "Names that Koog 1.0 has distinct layers — chat-history persistence (resume conversations by session), generic Persistence checkpoints (resume an interrupted run mid-graph), and LongTermMemory (fact retrieval across sessions). Without this, the developer cannot decide between them"
+    },
+    {
+      "name": "Routes to chat-history-jdbc",
+      "max_score": 30,
+      "description": "Recommends the chat-history persistence path with a JDBC backend — or invokes the appropriate sibling skill. Threads userId as the session key on agent.run. Does not require the developer to manually load and prepend message history"
+    },
+    {
+      "name": "Does NOT install the generic Persistence feature",
+      "max_score": 25,
+      "description": "Does NOT install Persistence or wire AgentCheckpointData / runFromCheckpoint to satisfy this need. Generic persistence checkpoints agent run state (node position, planner state, storage) for mid-run crash recovery — it does not satisfy \"resume the conversation tomorrow\""
+    },
+    {
+      "name": "Acknowledges the developer's word choice without capitulating",
+      "max_score": 10,
+      "description": "Engages with the developer's framing (\"add persistence\") and surfaces that the term covers more than one Koog feature. Does not just refuse without naming the mismatch"
+    },
+    {
+      "name": "Does NOT recommend LongTermMemory",
+      "max_score": 10,
+      "description": "Does NOT install LongTermMemory for this need. LongTermMemory stores extracted facts about the user/session for retrieval — not the raw messages required to resume the conversation"
+    }
+  ]
+}

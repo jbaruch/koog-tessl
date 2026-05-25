@@ -1,0 +1,41 @@
+{
+  "context": "Tests whether the agent picks the primary 1.0 MCP transport (Streamable HTTP) when the server supports it, rather than defaulting to the older SSE transport that hosted Koog docs may still lead with.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses the Streamable HTTP transport",
+      "max_score": 30,
+      "description": "Builds the MCP tool registry with McpToolRegistryProvider.streamableHttp { ... }. Does NOT use fromSseUrl (the older transport) when the server supports the modern one"
+    },
+    {
+      "name": "Adds the agents-mcp dependency",
+      "max_score": 20,
+      "description": "Adds ai.koog:agents-mcp at 1.0.0 or later to build.gradle.kts. The umbrella koog-agents does not include MCP, so the dependency must be added explicitly"
+    },
+    {
+      "name": "Passes the server URL to the transport configuration",
+      "max_score": 10,
+      "description": "Sets the url to the developer's value (https://mcp.github.example/v1) inside the streamableHttp configuration block"
+    },
+    {
+      "name": "Builds the registry before constructing the agent",
+      "max_score": 15,
+      "description": "Calls McpToolRegistryProvider.streamableHttp(...) and assigns its result to a variable BEFORE the AIAgent(...) call, then passes that variable as toolRegistry. Does not try to add MCP tools after the agent is constructed"
+    },
+    {
+      "name": "Calls the suspending builder inside a coroutine context",
+      "max_score": 10,
+      "description": "The streamableHttp builder is invoked inside the existing runBlocking { ... } (or another coroutine scope) — not at top-level outside a suspending context"
+    },
+    {
+      "name": "Reads the GitHub token from the environment",
+      "max_score": 10,
+      "description": "Reads the personal access token from an environment variable (e.g., GITHUB_PERSONAL_ACCESS_TOKEN) via System.getenv. Does not embed the token literal in source"
+    },
+    {
+      "name": "Passes the token as a bearer header in the transport config",
+      "max_score": 5,
+      "description": "Configures the transport (within the streamableHttp block, via the supported headers / auth mechanism) to send the token as a bearer Authorization header on requests to the server"
+    }
+  ]
+}

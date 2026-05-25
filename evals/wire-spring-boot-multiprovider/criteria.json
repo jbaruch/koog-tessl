@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent configures both providers under the ai.koog.<provider> convention, routes through MultiLLMPromptExecutor instead of autowiring individual LLMClient beans, and reads keys from environment variables — fixing the autowiring antipattern the previous engineer left.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Configures both providers under ai.koog.<provider>",
+      "max_score": 25,
+      "description": "application.yml has both ai.koog.openai and ai.koog.google blocks with api-key and enabled: true. Neither provider is configured under a different prefix or hand-rolled property"
+    },
+    {
+      "name": "Reads both keys from environment variables",
+      "max_score": 20,
+      "description": "Each api-key reads from a ${VAR} expansion (e.g., ${OPENAI_API_KEY}, ${GOOGLE_API_KEY}). Neither key is hardcoded as a literal in YAML"
+    },
+    {
+      "name": "Migrates service code from LLMClient to MultiLLMPromptExecutor",
+      "max_score": 30,
+      "description": "The service that previously autowired LLMClient is changed to autowire MultiLLMPromptExecutor instead. Does not keep both injections, does not introduce a separate per-provider bean wiring"
+    },
+    {
+      "name": "Routes by model at the call site",
+      "max_score": 15,
+      "description": "The service code selects the model (OpenAI vs Google) at the call site by passing llmModel = OpenAIModels.* or GoogleModels.* to AIAgent(...). MultiLLMPromptExecutor routes based on which provider's models the call references"
+    },
+    {
+      "name": "Does not introduce a custom @Bean LLMClient override",
+      "max_score": 5,
+      "description": "Does not declare a @Bean @Primary LLMClient — the autoconfig handles the standard case; an override is only needed for custom transports/retry/etc."
+    },
+    {
+      "name": "Does not remove the starter dependency",
+      "max_score": 5,
+      "description": "Keeps ai.koog:koog-spring-boot-starter on the classpath — that's what powers the autoconfig"
+    }
+  ]
+}

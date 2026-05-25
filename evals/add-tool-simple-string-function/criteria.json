@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent picks the most ergonomic tool-registration style for a straightforward String-returning function — the annotated ToolSet path — and registers it correctly. Reaching for the typed Tool<TArgs,TResult> path here would be over-engineering.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Picks the annotated ToolSet style",
+      "max_score": 25,
+      "description": "Wraps the function inside a class that implements ToolSet, with @Tool on the method. Does NOT subclass Tool<TArgs,TResult> or ToolBase — those are over-engineering for a String-returning lookup function"
+    },
+    {
+      "name": "Annotates parameters with @LLMDescription",
+      "max_score": 20,
+      "description": "Each parameter (city, units) has an @LLMDescription explaining what it represents. Without these the generated tool schema is unusable"
+    },
+    {
+      "name": "Annotates the class and method with @LLMDescription",
+      "max_score": 15,
+      "description": "The ToolSet class itself and the @Tool method each have an @LLMDescription describing what they do (the LLM sees these descriptions)"
+    },
+    {
+      "name": "Registers via ToolRegistry DSL",
+      "max_score": 20,
+      "description": "Registers the tools using the ToolRegistry { ... } DSL builder, invoking asTools() on a ToolSet instance to bridge into the registry. Not by manually constructing a Map, not by appending after construction"
+    },
+    {
+      "name": "Passes the registry into AIAgent at construction",
+      "max_score": 15,
+      "description": "Passes the assembled registry as the toolRegistry parameter to AIAgent(...). Does not mutate the agent's registry after construction"
+    },
+    {
+      "name": "Does not introduce typed args classes",
+      "max_score": 5,
+      "description": "Does not create @Serializable data classes for args or results. The function takes two String parameters and returns a String — the annotated path covers it directly"
+    }
+  ]
+}

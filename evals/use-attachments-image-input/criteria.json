@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent uses the Attachment.image factory and threads it through a custom node that produces a Message.User with attachments, then sends via nodeLLMSendMessage — rather than reaching for OCR, base64-encoding by hand, or stringifying the file path into the prompt text.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Uses Attachment.image to wrap the file",
+      "max_score": 30,
+      "description": "Builds the attachment via Attachment.image(file) (or an equivalent factory taking the File). Does NOT base64-encode the bytes by hand, does NOT call OCR or stringify the path into the prompt"
+    },
+    {
+      "name": "Constructs a Message.User with attachments",
+      "max_score": 25,
+      "description": "Creates a Message.User with both a content string (the developer's question) and the attachments list containing the image. Not a plain string prompt"
+    },
+    {
+      "name": "Sends via nodeLLMSendMessage, not nodeLLMRequest",
+      "max_score": 20,
+      "description": "Wires the Message.User into a nodeLLMSendMessage (or variant) — Message.User-input family. Does NOT use nodeLLMRequest (which takes String input — wrong family for the Message.User shape this strategy needs)"
+    },
+    {
+      "name": "Strategy is typed strategy<File, String>",
+      "max_score": 15,
+      "description": "Declares strategy<File, String>(\"...\") so the input is the File and the output is the LLM's text reply. Type parameters match the developer's stated input/output shape"
+    },
+    {
+      "name": "Returns text from a final nodeFinish edge",
+      "max_score": 10,
+      "description": "Routes from nodeLLMSendMessage to nodeFinish on the text-message branch (onTextMessage { true }) so the agent's output is the LLM's description"
+    }
+  ]
+}

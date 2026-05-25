@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent merges the MCP-derived registry with the existing local registry using ToolRegistry composition, rather than replacing the local tools, mutating the registry after construction, or jamming everything into one builder block.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Composes the two registries with +",
+      "max_score": 30,
+      "description": "Combines the existing local registry and the MCP registry by adding them with + (e.g., localRegistry + mcpRegistry). Does NOT discard either registry, does NOT re-instantiate CalculatorTools inside the MCP block, does NOT use any other ad-hoc merging approach"
+    },
+    {
+      "name": "Preserves the existing CalculatorTools registration",
+      "max_score": 20,
+      "description": "The final toolRegistry passed to AIAgent(...) still contains CalculatorTools — visible either as the original ToolRegistry { tools(CalculatorTools().asTools()) } expression or an equivalent reconstruction. The local tools are not silently dropped"
+    },
+    {
+      "name": "Uses the modern HTTP MCP transport",
+      "max_score": 20,
+      "description": "Builds the MCP registry with McpToolRegistryProvider.streamableHttp { ... } against the given URL. Does not fall back to fromSseUrl when the server supports the modern transport"
+    },
+    {
+      "name": "Adds the agents-mcp dependency",
+      "max_score": 10,
+      "description": "Adds ai.koog:agents-mcp at 1.0.0 or later to build.gradle.kts since the umbrella does not include MCP"
+    },
+    {
+      "name": "Constructs the merged registry before AIAgent(...)",
+      "max_score": 10,
+      "description": "Builds both registries and merges them into a final value BEFORE calling AIAgent(...), then passes the merged value as toolRegistry. Does not try to mutate the agent's registry after construction"
+    },
+    {
+      "name": "Calls the suspending MCP builder inside a coroutine context",
+      "max_score": 10,
+      "description": "Invokes McpToolRegistryProvider.streamableHttp(...) inside runBlocking { ... } or another coroutine scope, since it is suspending"
+    }
+  ]
+}

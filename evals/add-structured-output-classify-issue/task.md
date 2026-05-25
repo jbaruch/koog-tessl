@@ -1,0 +1,20 @@
+# Make an Agent Return a Typed Classification
+
+## Problem/Feature Description
+
+A developer has a working Koog 1.0 agent that classifies GitHub issues — currently it returns a free-form string and downstream code parses it with regex (brittle). They want the agent to return a typed object directly:
+
+```kotlin
+@Serializable
+data class IssueClassification(
+    val type: String,        // "bug" | "feature" | "question"
+    val confidence: Double,
+    val suggestedLabels: List<String>,
+)
+```
+
+The agent currently uses `singleRunStrategy()` (the default) — they're not authoring a custom strategy graph. They want the simplest possible change.
+
+## Output Specification
+
+Walk through the change. Produce the modified agent construction code and any imports as a single response, labeled.
