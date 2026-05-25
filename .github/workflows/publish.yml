@@ -27,10 +27,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          # fetch-depth: 0 required by the skill-review action below — it diffs
+          # the current push against `github.event.before` to detect changed
+          # skills, which needs the prior commit reachable in the local clone.
+          fetch-depth: 0
       - name: Setup Tessl CLI
         uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e  # v2
         with:
           token: ${{ secrets.TESSL_TOKEN }}
+      - name: Skill review (changed only)
+        # Mandatory `tessl skill review --threshold 85` gate per
+        # `jbaruch/coding-policy: context-artifacts` Mandatory Review. The
+        # action loops over skills whose files changed since the previous
+        # push (`git diff $github.event.before..HEAD -- skills/`) and runs
+        # `tessl skill review` on each; below-threshold scores fail this
+        # step, which blocks the publish step below. Ref pinned to the
+        # latest `jbaruch/coding-policy` main SHA as of 2026-05-26.
+        uses: jbaruch/coding-policy/.github/actions/skill-review@ef67ffe543369d4269c0d28c5253e09fbd15002f
+        with:
+          threshold: '85'
       - name: Publish current tile.json version
         # Explicitly NOT using `tesslio/patch-version-publish`. That action's
         # design contract (auto-bump patch when local matches registry, then
