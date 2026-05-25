@@ -16,6 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
       - name: Publish to Tessl registry
-        uses: tesslio/patch-version-publish@088d998ba027eb8f646397e83fcd263cd336f139  # v1
+        # Pinned past v1: the v1 tag SHA (088d998b) ships a `tessl tile info | grep`
+        # pipeline that exits non-zero on first-publish 404, killing the script under
+        # `bash -e -o pipefail` before the [ -z "$LATEST" ] branch executes. main HEAD
+        # 922c589 adds explicit 404 handling. Revisit when tesslio advances v1.
+        uses: tesslio/patch-version-publish@922c5897539c33bf5937b87d0fbd0c0316df8975  # main @ 2026-05-25
         with:
           token: ${{ secrets.TESSL_TOKEN }}
