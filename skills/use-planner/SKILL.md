@@ -13,11 +13,17 @@ description: >
 
 # Use Planner Skill
 
-This skill is an action router — pick the step that matches the user's intent and execute only that step. Do not run other steps; do not parallelize.
+This skill is an action router — pick the step that matches the user's intent and execute only that step. Do not parallelize.
+
+Chaining contract (exhaustive):
+
+- Step 1 is the entry point. It either redirects (via `Skill(skill: "author-strategy")`) and finishes, or chains to Step 2 / Step 3 to wire the picked planner variant
+- Steps 2 and 3 are terminal — execute one, then finish. Do not chain Step 2 to Step 3 or vice versa
+- Direct entry into Step 2 or Step 3 is permitted only when the caller already determined the variant; otherwise enter via Step 1
 
 Available actions:
 
-- **Step 1** — Confirm the planner is the right primitive. If not, redirect via `Skill(skill: "author-strategy")`. If yes, the user picks LLM-based or GOAP and the relevant Step (2 or 3) follows
+- **Step 1** — Confirm the planner is the right primitive. If not, redirect via `Skill(skill: "author-strategy")` and finish. If yes, pick LLM-based or GOAP and chain into the relevant Step (2 or 3)
 - **Step 2** — LLM-based planner (`Planners.llmBased` or `Planners.llmBasedWithCritic`)
 - **Step 3** — GOAP planner (`Planners.goap`)
 
