@@ -6,9 +6,9 @@ alwaysApply: true
 
 ## Use 1.0+, not 0.x
 
-- All Koog artifacts ship under group `ai.koog`. Pin to `1.0.0` or later
+- All Koog artifacts ship under group `ai.koog`. Pin the umbrella and most modules to `1.0.0` or later. A few satellite modules (`agents-mcp`, `agents-mcp-server`, standalone `agents-ext`) remain on `1.0.0-beta` in the 1.0 release window — see the dedicated section below
 - Never mix 0.x and 1.0 artifact versions in one project — the API surface diverged at 1.0 (factory functions, planner module split, HTTP transport decoupling); a mixed graph compiles in unpredictable ways and fails at link time
-- The hosted Maven snippet on `docs.koog.ai/quickstart/` still showed `0.7.1` at the time this rule was written. Don't copy it — use `1.0.0` or later
+- The hosted Maven snippet on `docs.koog.ai/quickstart/` still showed `0.7.1` at the time this rule was written. Don't copy it — use `1.0.0` (or the appropriate `1.0.0-beta` for the satellite modules)
 
 ## Start with the umbrella
 
