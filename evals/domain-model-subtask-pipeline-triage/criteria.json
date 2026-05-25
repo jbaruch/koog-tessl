@@ -1,0 +1,41 @@
+{
+  "context": "Tests whether the agent integrates the full pattern — tools sliced by access, typed @LLMDescription handoff classes between phases, subgraphWithTask per phase with per-phase model selection, subgraphWithVerification + CriticResult for the verify/adjust loop. The developer named all the requirements; the question is whether the agent reaches for the integrated pattern rather than picking one piece and missing the others.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Tools sliced into communication / read / write ToolSets",
+      "max_score": 17,
+      "description": "Produces three distinct ToolSet classes — one for communication (asking the customer), one for reading account data, one for mutating state — not a single monolithic ToolSet and not a feature-axis split. The grouping is by access pattern as the developer's phase constraints demand"
+    },
+    {
+      "name": "Each phase grants only the matching tool subset",
+      "max_score": 13,
+      "description": "The understanding phase's subgraphWithTask receives communication + read tools (no write); the action phase receives read + write (no communication); the verification phase receives communication + read (no write); the adjustment phase receives read + write (the task says it re-runs the action — communication-only adjustment cannot apply the corrected fix). NOT every phase getting every tool"
+    },
+    {
+      "name": "Typed @LLMDescription'd data classes for inter-phase handoffs",
+      "max_score": 25,
+      "description": "Defines @Serializable data classes (e.g., IssueSummary, Resolution, etc.) with @LLMDescription on the class and on every property. The phases consume and produce these typed shapes — not String handoffs and not Map<String, Any>. The contract is type-checked between phases"
+    },
+    {
+      "name": "Uses subgraphWithTask<In, Out> for each phase",
+      "max_score": 15,
+      "description": "Each phase is wired with subgraphWithTask<InputType, OutputType> (or subgraphWithVerification for the verifier). The Input/Output type parameters match the handoff classes from the previous criterion. Does NOT inline each phase as a plain nodeLLMRequest in a single strategy"
+    },
+    {
+      "name": "Verification + adjust loop with CriticResult branching",
+      "max_score": 15,
+      "description": "Verification is a subgraphWithVerification<T> whose CriticResult<T> drives two edges: success goes to nodeFinish (transformed { it.input }); failure goes to the adjust phase, coercing the nullable critic feedback to a non-null String via transformed { it.feedback.orEmpty() } and into a subgraphWithTask<String, _> adjust subgraph. The adjust phase has a back-edge to verification. NOT a fire-and-forget linear chain"
+    },
+    {
+      "name": "Mixed model selection per phase",
+      "max_score": 10,
+      "description": "Picks distinct models per phase honoring the developer's stated preferences — a cheap model for understanding, a mid-tier model for action, a reasoning-tier model for verification. NOT the same model on all four phases"
+    },
+    {
+      "name": "Declares the required Gradle dependencies",
+      "max_score": 5,
+      "description": "Names the Gradle dependency lines needed for the pipeline — at minimum `ai.koog:agents-ext:1.0.0` (provides `subgraphWithTask` / `subgraphWithVerification`) plus whatever provider modules (`prompt-executor-openai-client`, `prompt-executor-anthropic-client`) the chosen models require. An answer that omits the dependencies is incomplete — the agent shouldn't compile without them"
+    }
+  ]
+}

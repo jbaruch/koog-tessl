@@ -37,6 +37,7 @@ Two **always-on rules** carry the gotchas every Koog project hits — module coo
 | Skill | What it does |
 |---|---|
 | `author-strategy` | Custom graph strategy with subgraphs and verify/fix loops |
+| `domain-model-subtask-pipeline` | Integrated pattern — tools sliced by access, typed `@LLMDescription` handoff classes, `subgraphWithTask<In, Out>` chained by compile-time types |
 | `use-planner` | LLM-based planner or GOAP when topology depends on runtime context |
 | `model-planner-subtasks` | Planner's tree of subtasks — `PlannerNode` composition, parallel vs sequential, retries |
 | `use-llm-node-variants` | Streaming, multiple-choice, moderation, force-one-tool nodes |

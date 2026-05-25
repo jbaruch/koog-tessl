@@ -1,0 +1,31 @@
+{
+  "context": "Negative case — tests whether the agent recognizes that the developer's actual workload (one-shot text-to-text with no tools and no distinct phases) does not benefit from the subtask-pipeline pattern, and routes them to a simpler shape rather than building the pipeline because the developer asked for it by name.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Names the absence of distinct phases as the disqualifier",
+      "max_score": 25,
+      "description": "Identifies in prose that the workload has no phases that produce structurally different intermediate artifacts — it is one transformation. The pipeline pattern's benefit is the typed handoff between phases; with no handoff there is no benefit"
+    },
+    {
+      "name": "Redirects to the simpler shape",
+      "max_score": 30,
+      "description": "Recommends the default agent shape — `AIAgent(systemPrompt = ..., promptExecutor = ..., llmModel = ...)` (the default `singleRunStrategy()` is implicit and usually omitted) — OR the functional-agent shape if some Kotlin logic is needed. Names one of these specifically. Does NOT build a contrived subgraphWithTask<String, String> pipeline just to satisfy the developer's request"
+    },
+    {
+      "name": "Does not produce subgraphWithTask code",
+      "max_score": 20,
+      "description": "The output contains no subgraphWithTask, subgraphWithVerification, or strategy { ... } block. Building the pipeline pattern for a one-shot text transform is the failure mode this scenario tests"
+    },
+    {
+      "name": "Does not introduce typed handoff data classes",
+      "max_score": 15,
+      "description": "The output contains no @Serializable @LLMDescription'd intermediate data classes. Inventing a fake intermediate type just to have a 'typed handoff' for a one-step transform is over-engineering"
+    },
+    {
+      "name": "Engages with the developer's framing without capitulating",
+      "max_score": 10,
+      "description": "Acknowledges that the pattern is real and powerful — and explains the criterion that makes it fit: distinct phases with structurally different intermediate shapes. Does not just refuse without explaining when the pattern would fit"
+    }
+  ]
+}

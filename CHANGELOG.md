@@ -2,6 +2,13 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.0] — 2026-05-25
+
+### Added
+
+- `domain-model-subtask-pipeline` skill — the integrated pattern for typed-handoff pipelines: tools sliced by access into separate `ToolSet`s (read / write / communication), `@Serializable` `@LLMDescription`-annotated data classes as inter-subtask contracts, `subgraphWithTask<In, Out>` per phase with per-phase model selection, `subgraphWithVerification<T>` + `CriticResult<T>` for self-correction loops. The methodology JetBrains' KotlinConf 2026 banking demo demonstrates — fills the gap left by `author-strategy` (DSL mechanics only) and `add-structured-output` (top-level typed output only)
+- 2 eval scenarios — `domain-model-subtask-pipeline-triage` (positive, four-phase support workflow) and `domain-model-subtask-pipeline-refuse` (negative — declines to over-engineer a one-shot text transform)
+
 ## [0.3.1] — 2026-05-25
 
 ### Added

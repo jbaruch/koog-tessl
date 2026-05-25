@@ -38,6 +38,7 @@ alwaysApply: true
 ## When to reach for a skill
 
 - Authoring a custom graph strategy → `author-strategy`
+- Building a typed-handoff pipeline of domain-modeled subtasks (tools sliced by access, `subgraphWithTask<In, Out>` per phase, verify/adjust loops) → `domain-model-subtask-pipeline`
 - Using a planner (LLM-based or GOAP) → `use-planner`
 - Working with `storage`, history compression, or `LongTermMemory` → `manage-state`
 - Adding a tool → `add-tool`; connecting to an MCP server → `wire-mcp-server`

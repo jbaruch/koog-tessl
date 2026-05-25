@@ -1,6 +1,6 @@
 {
   "name": "jbaruch/koog",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "summary": "Koog 1.0 idioms, gotchas, and scaffolding skills for Kotlin agents on the JVM",
   "private": false,
   "entrypoint": "README.md",
@@ -21,6 +21,7 @@
     "add-tool": { "path": "skills/add-tool/SKILL.md" },
     "wire-mcp-server": { "path": "skills/wire-mcp-server/SKILL.md" },
     "author-strategy": { "path": "skills/author-strategy/SKILL.md" },
+    "domain-model-subtask-pipeline": { "path": "skills/domain-model-subtask-pipeline/SKILL.md" },
     "use-planner": { "path": "skills/use-planner/SKILL.md" },
     "model-planner-subtasks": { "path": "skills/model-planner-subtasks/SKILL.md" },
     "use-functional-agent": { "path": "skills/use-functional-agent/SKILL.md" },
