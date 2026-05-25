@@ -47,7 +47,12 @@ Finish here.
 
 ## Step 2 — History Compression
 
-Long agentic runs blow the context window. Compress inside a write session at deliberate points — end of a phase, start of a subgraph — not at every node. Place the compression call in the **boundary node** the user identified (one node, not every node); "every node" wastes tokens summarizing intermediate state the next step needed.
+Long agentic runs blow the context window. Compression rules:
+
+- Compress inside a write session
+- Compress at deliberate points — end of a phase, start of a subgraph
+- Place the call in the boundary node the user identified
+- Do not compress at every node
 
 Default to `HistoryCompressionStrategy.WholeHistory` (a single TL;DR) unless the user explicitly asks for last-N, time-window, chunked, or fact-extraction shape. Write the modified node body to disk with an explicit `Path:` label (same convention as `scaffold-agent`):
 

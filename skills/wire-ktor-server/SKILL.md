@@ -40,9 +40,12 @@ fun Application.module() {
 
 `install(Koog) { ... }` is the entry point. The plugin's companion implements Ktor's `Plugin<ApplicationCallPipeline, KoogAgentsConfig, Koog>` so it composes with other Ktor plugins (`ContentNegotiation`, `Authentication`, `CallLogging`) the usual way.
 
-Step 3 (MCP) and Step 4 (HOCON config) are optional add-ons. Only include them if the user's request mentions MCP servers or external config. For a minimal `POST /agent` route, skip directly to Step 5.
+Steps 3 and 4 are conditional add-ons within the sequential flow:
 
-Proceed immediately to Step 3 if MCP is required; otherwise jump to Step 5.
+- Step 3 — execute when the user named MCP servers; otherwise pass through as a no-op
+- Step 4 — execute when the user named HOCON or YAML external config; otherwise pass through as a no-op
+
+Proceed immediately to Step 3.
 
 ## Step 3 — Register MCP Servers Inside the Plugin (Optional)
 
@@ -65,7 +68,7 @@ install(Koog) {
 
 Use Streamable HTTP unless the remote server only supports SSE. For the standalone (non-Ktor) form, invoke `Skill(skill: "wire-mcp-server")`.
 
-Proceed to Step 4 only if the user named HOCON or YAML external config; otherwise jump to Step 5.
+Proceed immediately to Step 4.
 
 ## Step 4 — Load Config from `application.conf` (Optional — skip unless user names HOCON/YAML config)
 
