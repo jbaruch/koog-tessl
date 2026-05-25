@@ -3,6 +3,17 @@ name: Publish Tile
 on:
   push:
     branches: [main]
+    # Only fire when tile-content paths change. CI/hygiene-only PRs (workflows,
+    # pre-commit config, .env.example, agent-only config) don't change the
+    # published tile (they're in `.tesslignore`) and shouldn't trigger publish.
+    # The allow-list mirrors the tile's payload surface.
+    paths:
+      - 'rules/**'
+      - 'skills/**'
+      - 'evals/**'
+      - 'tile.json'
+      - 'README.md'
+      - 'CHANGELOG.md'
   workflow_dispatch:
 
 permissions:
