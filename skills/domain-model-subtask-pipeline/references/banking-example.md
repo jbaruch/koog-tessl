@@ -1,9 +1,11 @@
-# Banking Pipeline — Full Example
+# Banking Pipeline — Worked Excerpts
 
-End-to-end Kotlin file matching the seven-step skill. Adapted from the
-JetBrains KotlinConf 2026 banking demo — four typed phases (`identifyProblem`
-→ `fixProblem` → `verifySolution` ⇄ `adjustSolution`), tools sliced by access
-into three `ToolSet`s, mixed per-phase models.
+Illustrative Kotlin snippets matching the seven-step skill. Contains `...`
+placeholders for tool bodies and prompt-executor wiring; not a standalone
+buildable file. Adapted from the JetBrains KotlinConf 2026 banking demo —
+four typed phases (`identifyProblem` → `fixProblem` → `verifySolution` ⇄
+`adjustSolution`), tools sliced by access into three `ToolSet`s, mixed
+per-phase models.
 
 ## Tools sliced by access pattern
 
