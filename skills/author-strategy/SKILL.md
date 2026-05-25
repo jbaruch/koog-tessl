@@ -89,6 +89,22 @@ Edges declare topology and branching. Vocabulary:
 - `edge(a forwardTo b transformed { reshape(it) })` — change shape between nodes
 - `a then b` — shorthand for an unconditional sequential edge
 
+**Member vs extension — which imports you need.** The infix vocabulary splits across two shapes; getting it wrong is the most common copy-paste compile failure.
+
+| Primitive | Kind | Import needed? |
+|---|---|---|
+| `forwardTo` | infix member on `AIAgentNodeBase` | No |
+| `onCondition` | infix member on `AIAgentEdgeBuilderIntermediate` | No |
+| `transformed` | infix member on `AIAgentEdgeBuilderIntermediate` | No |
+| `onToolCalls` | top-level extension | `import ai.koog.agents.core.dsl.extension.onToolCalls` |
+| `onTextMessage` | top-level extension | `import ai.koog.agents.core.dsl.extension.onTextMessage` |
+| `onIsInstance` | top-level extension | `import ai.koog.agents.core.dsl.extension.onIsInstance` |
+| `onMessageParts` | top-level extension | `import ai.koog.agents.core.dsl.extension.onMessageParts` |
+| `onSuccessful` / `onFailure` | top-level extensions | `import ai.koog.agents.core.dsl.extension.onSuccessful` / `onFailure` |
+| `asUserMessage` / `asToolResultMessage` | top-level extensions | `import ai.koog.agents.core.dsl.extension.asUserMessage` / `asToolResultMessage` |
+
+Members travel with their receiver type and need no import. Extensions live in `ai.koog.agents.core.dsl.extension.*` and must be imported by name. Star-imports work but obscure which DSL surface is actually in use.
+
 Branching logic belongs in edge predicates, not inside node bodies. Lifting it to edges keeps the topology inspectable.
 
 Proceed immediately to Step 6.
@@ -98,6 +114,10 @@ Proceed immediately to Step 6.
 If a step needs several LLM calls, its own tool subset, or its own model, lift it into a subgraph. Reference: `examples/simple-examples/.../subgraphwithtask/CustomStrategy.kt`.
 
 ```kotlin
+import ai.koog.agents.ext.agent.subgraphWithTask
+import ai.koog.agents.ext.agent.subgraphWithVerification
+import ai.koog.agents.ext.agent.CriticResult
+
 val generate by subgraphWithTask<Unit, String>(generateTools, llmModel = OpenAIModels.Chat.GPT4o) { input ->
     "system prompt for the generation step..."
 }
@@ -117,7 +137,9 @@ edge(fix forwardTo verify)
 
 The generate → verify → fix shape is the canonical "real agentic workflow" demo — it shows iterative correction without inventing a planner.
 
-Pull `ai.koog:agents-ext` for `subgraphWithTask` / `subgraphWithVerification`.
+`subgraphWithTask`, `subgraphWithVerification`, and `CriticResult` live in package `ai.koog.agents.ext.agent` but ship inside the **`agents-core`** artifact, which the `koog-agents` umbrella already pulls. No extra dependency needed — the standalone `ai.koog:agents-ext` artifact is a separate `1.0.0-beta` module and is NOT required for these APIs.
+
+If you type-annotate the returned strategy, the strategy type lives in `ai.koog.agents.core.agent.entity.AIAgentGraphStrategy` (not bare `ai.koog.agents.core.agent`).
 
 Proceed immediately to Step 7.
 

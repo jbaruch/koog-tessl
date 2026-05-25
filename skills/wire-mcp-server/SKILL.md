@@ -28,11 +28,16 @@ Proceed immediately to Step 2.
 
 ## Step 2 — Add the Dependency
 
-Open `build.gradle.kts` and confirm `ai.koog:agents-mcp:1.0.0` is in the dependencies block. The umbrella `ai.koog:koog-agents` does not pull MCP — it must be added explicitly. If absent, add it:
+Open `build.gradle.kts` and confirm the MCP client artifact is in the dependencies block. The umbrella `ai.koog:koog-agents` does not pull MCP — it must be added explicitly. If absent, add it:
 
 ```kotlin
-implementation("ai.koog:agents-mcp:1.0.0")
+implementation("ai.koog:agents-mcp-jvm:1.0.0-beta")
 ```
+
+**Two gotchas the umbrella version hides:**
+
+- `agents-mcp` (and `agents-mcp-server`) ship as **`1.0.0-beta`** — Koog 1.0's stable release did not publish them at `1.0.0`. Pin `1.0.0-beta` (or later when stable).
+- They publish only JVM variants. Use the **`-jvm` suffix** (`agents-mcp-jvm`, not bare `agents-mcp`) — without it, Gradle KMP variant resolution can't pick the JVM artifact at this version and the build fails with "could not find" errors.
 
 Re-run `./gradlew --refresh-dependencies` if the project is already imported into the IDE.
 
@@ -40,12 +45,15 @@ Proceed immediately to Step 3.
 
 ## Step 3 — Build the MCP `ToolRegistry`
 
-In the file that constructs the agent, build the MCP registry **before** the agent. Pick the form matching the transport:
+In the file that constructs the agent, build the MCP registry **before** the agent. Pick the form matching the transport.
+
+**`McpToolRegistryProvider` is an `object`; each transport builder (`streamableHttp`, `fromSseUrl`, `fromProcess`) is a top-level extension function in `ai.koog.agents.mcp`.** Each requires its own import alongside the provider — `import ai.koog.agents.mcp.McpToolRegistryProvider` alone won't bring the builders into scope.
 
 **Streamable HTTP (preferred):**
 
 ```kotlin
 import ai.koog.agents.mcp.McpToolRegistryProvider
+import ai.koog.agents.mcp.streamableHttp
 
 val mcpRegistry = McpToolRegistryProvider.streamableHttp {
     url = "https://<your-mcp-server>/mcp"
@@ -56,13 +64,17 @@ val mcpRegistry = McpToolRegistryProvider.streamableHttp {
 **SSE (fallback):**
 
 ```kotlin
+import ai.koog.agents.mcp.McpToolRegistryProvider
+import ai.koog.agents.mcp.fromSseUrl
+
 val mcpRegistry = McpToolRegistryProvider.fromSseUrl("https://<your-mcp-server>/sse")
 ```
 
 **stdio (locally launched):**
 
 ```kotlin
-import java.lang.ProcessBuilder
+import ai.koog.agents.mcp.McpToolRegistryProvider
+import ai.koog.agents.mcp.fromProcess
 
 val process = ProcessBuilder("npx", "-y", "@playwright/mcp@latest").start()
 val mcpRegistry = McpToolRegistryProvider.fromProcess(process)

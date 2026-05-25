@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent correctly distinguishes member-from-extension primitives in the Koog strategy DSL when emitting the import block. The natural tool-handling loop uses both shapes — `forwardTo` (member, no import), `onToolCalls` / `onTextMessage` (extensions in `ai.koog.agents.core.dsl.extension.*`, need explicit imports). Agents that copy-paste the call shape without resolving the import side typically over-import members or under-import extensions, which is the exact compile error this rubric grades against.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Imports the `onToolCalls` extension explicitly",
+      "max_score": 22,
+      "description": "The produced file contains a line like `import ai.koog.agents.core.dsl.extension.onToolCalls` (either fully-qualified named or as part of a star-import covering the same package). Without this import the `onToolCalls { ... }` edge call does not resolve"
+    },
+    {
+      "name": "Imports the `onTextMessage` extension explicitly",
+      "max_score": 22,
+      "description": "Same as above for `onTextMessage` — `import ai.koog.agents.core.dsl.extension.onTextMessage` (or a star-import covering the package). The text-reply branch of the loop calls this extension"
+    },
+    {
+      "name": "Does not invent a member import for `forwardTo`",
+      "max_score": 18,
+      "description": "The import block does NOT contain a line like `import ai.koog.agents.core.dsl.builder.forwardTo` (or any other variant of a top-level `forwardTo` import). `forwardTo` is an infix member on `AIAgentNodeBase`; inventing a top-level import for it produces an unresolved-reference error at compile"
+    },
+    {
+      "name": "Uses both edge primitives the loop needs",
+      "max_score": 18,
+      "description": "The strategy body contains an `edge(... forwardTo nodeExecuteTool onToolCalls { ... })`-shape edge AND an `edge(... forwardTo nodeFinish onTextMessage { ... })`-shape edge (variable names may differ). Both branches are present — the agent didn't shortcut the loop into a single linear chain"
+    },
+    {
+      "name": "Chains `nodeExecuteTools` to `nodeLLMSendToolResults` explicitly",
+      "max_score": 12,
+      "description": "After `nodeExecuteTools()` produces `ReceivedToolResults`, there is an edge feeding those into `nodeLLMSendToolResults()`. The 1.0 surface dropped the auto-writeback variant — without this edge the LLM never sees what its tools returned"
+    },
+    {
+      "name": "Wires the loop back through `nodeExecuteTool` on continued tool calls",
+      "max_score": 8,
+      "description": "There is a back-edge from `nodeLLMSendToolResults` to `nodeExecuteTools` gated by `onToolCalls { ... }`, so a multi-step tool sequence loops rather than dying after the first tool result"
+    }
+  ]
+}

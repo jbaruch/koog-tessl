@@ -20,7 +20,7 @@
     {
       "name": "Adds the agents-mcp dependency",
       "max_score": 10,
-      "description": "Adds ai.koog:agents-mcp at 1.0.0 or later to build.gradle.kts since the umbrella does not include MCP"
+      "description": "Adds `ai.koog:agents-mcp-jvm:1.0.0-beta` to build.gradle.kts since the umbrella does not include MCP. Requires the `-jvm` suffix (only JVM variants publish at this version) and the `1.0.0-beta` version tag"
     },
     {
       "name": "Constructs the merged registry before AIAgent(...)",

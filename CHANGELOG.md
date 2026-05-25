@@ -2,6 +2,25 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.2] — 2026-05-26
+
+### Fixed
+
+- `author-strategy` skill — added a member-vs-extension import table at the end of Step 5. The DSL primitives split across two shapes: `forwardTo` / `onCondition` / `transformed` are infix members (no import needed); `onToolCalls` / `onTextMessage` / `onIsInstance` / `onSuccessful` / `onFailure` / `asUserMessage` / `asToolResultMessage` / `onMessageParts` are top-level extensions in `ai.koog.agents.core.dsl.extension.*` (each needs its own import). Inventing a member import or omitting an extension import is the most common copy-paste compile failure
+- `author-strategy` + `domain-model-subtask-pipeline` skills — fixed the wrong artifact text. `subgraphWithTask` / `subgraphWithVerification` / `CriticResult` (package `ai.koog.agents.ext.agent`) ship inside `agents-core` (which `koog-agents` umbrella pulls), NOT the standalone `ai.koog:agents-ext:1.0.0-beta` artifact. Added the imports + the `AIAgentGraphStrategy` package note (`ai.koog.agents.core.agent.entity`, not bare `ai.koog.agents.core.agent`)
+- `wire-mcp-server` skill — each transport builder (`streamableHttp`, `fromSseUrl`, `fromProcess`) is a top-level extension in `ai.koog.agents.mcp` declared separately from the `McpToolRegistryProvider` object. All three example blocks now show the explicit extension import alongside the provider import
+- `wire-mcp-server` skill + `module-coordinates` rule — corrected the MCP client dependency to `ai.koog:agents-mcp-jvm:1.0.0-beta`. Koog 1.0 stable did not publish `agents-mcp` / `agents-mcp-server` at `1.0.0`; only `1.0.0-beta` is on Maven Central, and they publish only JVM variants so the `-jvm` suffix is mandatory for Gradle KMP variant resolution
+- `add-tool` + `wire-a2a` skills — corrected the `ToolSet` and `asTools` imports to come from `ai.koog.agents.core.tools.reflect.*` (the actual package), not bare `ai.koog.agents.core.tools.*`
+- `module-coordinates` rule — added Kotlin 2.3.10+ minimum requirement. Koog 1.0 is compiled with Kotlin 2.3.x; earlier Kotlin versions fail at consume time with metadata-version errors
+- `evals/domain-model-subtask-pipeline-triage/criteria.json` — corrected C7's required-Gradle-deps description: the umbrella `ai.koog:koog-agents:1.0.0` is sufficient (it pulls `agents-core`, which contains the subgraph DSL). Penalize unnecessary `agents-ext` lines
+
+### Added
+
+- `evals/author-strategy-import-shapes` — new positive scenario testing the member-vs-extension import correctness when the agent emits a tool-handling-loop strategy
+- `evals/wire-mcp-server-import-shapes` — new positive scenario testing the `fromSseUrl` extension import + the `-jvm:1.0.0-beta` dependency line. Updated `wire-mcp-server-stdio-playwright`, `wire-mcp-server-streamable-http`, and `wire-mcp-server-merge-tools` criteria to match the corrected artifact spec
+
+Closes #9 (items 1–9; item 10 is a separate Tessl install-policy investigation).
+
 ## [0.4.1] — 2026-05-26
 
 ### Added

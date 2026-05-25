@@ -15,7 +15,7 @@
     {
       "name": "Adds the agents-mcp dependency",
       "max_score": 20,
-      "description": "Adds ai.koog:agents-mcp at 1.0.0 or later to build.gradle.kts. The umbrella koog-agents does not include MCP, so the dependency must be added explicitly"
+      "description": "Adds the MCP client dependency `ai.koog:agents-mcp-jvm:1.0.0-beta` to build.gradle.kts. The umbrella koog-agents does not include MCP, so the dependency must be added explicitly. The artifact requires the `-jvm` suffix (only JVM variants are published at this version) and the `1.0.0-beta` version (Koog 1.0 stable did not publish `agents-mcp` at `1.0.0`)"
     },
     {
       "name": "Builds the registry before constructing the agent",
