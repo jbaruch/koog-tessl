@@ -1,0 +1,21 @@
+name: Publish Tile
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish jbaruch/koog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish to Tessl registry
+        uses: tesslio/patch-version-publish@v1
+        with:
+          token: ${{ secrets.TESSL_TOKEN }}

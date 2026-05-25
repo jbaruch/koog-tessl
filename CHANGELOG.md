@@ -2,6 +2,29 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.3.1] — 2026-05-25
+
+### Added
+
+- `.github/workflows/publish.yml` — `tesslio/patch-version-publish@v1` wired to push-on-main + manual dispatch; auto-bumps patch from the registry on future merges
+- `.github/workflows/review-openai.md` / `review-anthropic.md` — paired gh-aw PR reviewers from `jbaruch/coding-policy: install-reviewer` (cross-family review per `author-model-declaration`)
+- `.env.example` — required hosted-CI secrets with placeholder values and a deep link to `https://github.com/jbaruch/koog-tessl/settings/secrets/actions` (per `no-secrets`)
+- `.pre-commit-config.yaml` — gitleaks v8.21.2 + standard pre-commit-hooks (per `no-secrets` pre-commit-scanning requirement)
+- 4 negative eval scenarios — `use-planner-refuses-when-graph-fits`, `cache-llm-calls-refuses-provider-side`, `add-persistence-refuses-conversation`, `snapshot-and-restore-refuses-crash` — covering the cross-skill redirects each skill prescribes (closes the "only positive cases" gap from 0.3.0)
+- 1 generator-produced eval scenario — `use-attachments-pdf-and-url` (PDF + URL-image attachments in a single LLM call); the existing `use-attachments-image-input` only exercised images
+- `scenario.json` backfilled on every eval scenario (40 total) to match the canonical three-file shape `tessl scenario generate` emits — drift fix, not a feature
+
+### Changed
+
+- Slimmed `tile.json` `summary` from a 290-char comma-spliced multi-clause string back to a one-line description per `skill-authoring.md`
+- Stripped `interaction-rules` phantom reference from 8 skill files (the rule never existed in this tile or in any consumed tile)
+- Converted 7 prose skill cross-references (`see the \`X\` skill`, `redirect to \`X\``) to typed `Skill(skill: "X")` calls per `skill-authoring.md` "Typed Calls"
+- Split 6 step titles that combined verbs with "and" (`Verify and Hand Off`, `Bump JDK and Tooling`, etc.) per `skill-authoring.md` "Step Structure"
+- Reworded `model-planner-subtasks-parallel-tree` task to remove technique leak (`PlannerNode composition`, `storage-key tracking`) per `plugin-evals.md` "No Bleeding"
+- Reworded `use-attachments-pdf-and-url` task on the cross-family reviewer's finding — dropped `strategy` / `user message` technique prose
+- Renamed `enable-prompt-caching-anthropic-long-system` (43 chars) → `enable-prompt-caching-anthropic` (31) to fit the 40-char default cap
+- Renamed `wire-mcp-{merge-with-existing-tools,stdio-playwright,streamable-http-github}` → `wire-mcp-server-{merge-tools,stdio-playwright,streamable-http}` so prefixes match the skill name per `plugin-evals.md` "Naming"
+
 ## [0.3.0] — 2026-05-25
 
 ### Added
