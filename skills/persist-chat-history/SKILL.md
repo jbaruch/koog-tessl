@@ -51,7 +51,13 @@ Proceed immediately to Step 4.
 
 ## Step 4 — Install the Feature
 
-Write the modified agent construction to the project's main file (typically `src/main/kotlin/com/example/Main.kt`) and the dependency to `build.gradle.kts`. If the user named a route/handler, also write the updated handler file. Create files if they don't exist — do not respond with prose only; the user expects code on disk.
+Write the modified agent construction, the dependency, and any handler updates to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction (or the file containing the `AIAgent(...)` call)
+- `Path: build.gradle.kts` — appended dependency line
+- `Path: <route-or-handler-file>` — updated route/handler if the user named one
+
+Create files if they don't exist. Do not respond with prose only.
 
 Install in the `AIAgent(...)` trailing lambda. JDBC example:
 

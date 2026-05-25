@@ -49,7 +49,11 @@ Finish here.
 
 Long agentic runs blow the context window. Compress inside a write session at deliberate points — end of a phase, start of a subgraph — not at every node. Place the compression call in the **boundary node** the user identified (one node, not every node); "every node" wastes tokens summarizing intermediate state the next step needed.
 
-Default to `HistoryCompressionStrategy.WholeHistory` (a single TL;DR) unless the user explicitly asks for last-N, time-window, chunked, or fact-extraction shape. Write the modified node body to the file that defines the boundary node (typically the file containing the strategy definition, e.g., `src/main/kotlin/com/example/Strategy.kt`). If no such file exists in the project, create one — do not respond with prose only; the user expects the modified code on disk.
+Default to `HistoryCompressionStrategy.WholeHistory` (a single TL;DR) unless the user explicitly asks for last-N, time-window, chunked, or fact-extraction shape. Write the modified node body to disk with an explicit `Path:` label (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/Strategy.kt` — boundary node with the `replaceHistoryWithTLDR` call (or whichever file defines the strategy / boundary node)
+
+Create the file if it doesn't exist. Do not respond with prose only.
 
 ```kotlin
 import ai.koog.agents.core.dsl.extension.HistoryCompressionStrategy

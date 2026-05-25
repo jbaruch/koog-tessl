@@ -35,7 +35,12 @@ Proceed immediately to Step 3. Step 3 writes the actual code to disk; do not sto
 
 ## Step 3 — Install the Feature
 
-Write the modified agent construction to the file that contains the `AIAgent(...)` call (typically `src/main/kotlin/com/example/Main.kt`) and add the dependency line to `build.gradle.kts`. If those files don't exist in the project, create them — do not respond with prose only; the user expects code on disk.
+Write the modified agent construction and the dependency to disk — do not respond with prose only. Use explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction (or whichever file contains the `AIAgent(...)` call)
+- `Path: build.gradle.kts` — appended dependency line
+
+Create files if they don't exist.
 
 Install inside the `AIAgent(...)` trailing lambda. The feature is multiplatform (#1942 in 1.0), so the common-code block stays portable; JVM-only knobs come in Step 4.
 

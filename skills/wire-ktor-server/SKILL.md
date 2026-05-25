@@ -28,6 +28,7 @@ In the `Application` module, install the `Koog` plugin. The minimal install — 
 
 ```kotlin
 import ai.koog.ktor.Koog
+import ai.koog.prompt.executor.llms.all.simpleOpenAIExecutor
 import io.ktor.server.application.*
 
 fun Application.module() {
@@ -64,7 +65,7 @@ install(Koog) {
 
 Use Streamable HTTP unless the remote server only supports SSE. For the standalone (non-Ktor) form, invoke `Skill(skill: "wire-mcp-server")`.
 
-Proceed immediately to Step 4.
+Proceed to Step 4 only if the user named HOCON or YAML external config; otherwise jump to Step 5.
 
 ## Step 4 — Load Config from `application.conf` (Optional — skip unless user names HOCON/YAML config)
 

@@ -72,7 +72,13 @@ Finish here.
 
 Use when annotations don't fit — typed arguments with custom serialization, programmatic schema control, registration based on runtime data, or any case where the user's existing function takes a typed `data class` parameter.
 
-Write the tool class and the modified agent construction to the project's main source tree (typically `src/main/kotlin/com/example/`). Create the tool's source file (e.g., `<Name>Tool.kt`) and update or create `Main.kt` plus `build.gradle.kts` as needed. Do not respond with prose only; the user expects code on disk.
+Write the tool class and the modified agent construction to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/<Name>Tool.kt` — typed `Tool<TArgs,TResult>` subclass
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction registering the tool
+- `Path: build.gradle.kts` — any new dependency lines
+
+Create files if they don't exist. Do not respond with prose only.
 
 ```kotlin
 import ai.koog.agents.core.tools.Tool

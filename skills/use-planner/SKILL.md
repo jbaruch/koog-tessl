@@ -35,7 +35,7 @@ Then pick the planner variant from the user's description without blocking on a 
 
 - LLM-based (default) — pick when ordering depends on runtime findings and state is unstructured prose
 - GOAP — pick only when the user names "GOAP", "classical planner", "state space search", or supplies a typed `data class` state and precondition/effect pairs
-- `llmBasedWithCritic` — pick when the user names "critic", "verify", or asks for output-quality grading
+- `Planners.llmBasedWithCritic` — pick when the user names "critic", "verify", or asks for output-quality grading
 
 Proceed to Step 2 for LLM-based / critic, Step 3 for GOAP.
 
