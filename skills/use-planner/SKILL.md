@@ -5,8 +5,10 @@ description: >
   next action each turn, optionally with a critic loop) or GOAP (a classical planner
   searches a typed state space toward a goal). Pulls `ai.koog:agents-planner`, constructs
   the planner strategy, and wires it into `AIAgent(...)`. Use when the user asks to
-  "use a planner", "let the agent plan", "use GOAP", "build a planning agent", or
-  describes an open-ended task whose step sequence depends on runtime context.
+  "use a planner", "let the agent plan", "use GOAP", "build a planning agent",
+  names any of `Planners.llmBased`, `Planners.llmBasedWithCritic`, `Planners.goap`,
+  `PlannerAIAgent`, `agents-planner`, or describes an open-ended task whose step
+  sequence depends on runtime context.
 ---
 
 # Use Planner Skill
@@ -27,13 +29,15 @@ The graph DSL (`strategy { ... }`) is the right default. A planner is the right 
 - The action space is large enough that hardcoding edges would be a maintenance burden
 - You're willing to trade extra LLM round-trips for autonomy
 
-If the user's description matches "I know the topology, the LLM just picks tools within nodes", redirect via `Skill(skill: "author-strategy")` — they don't need a planner, they need a graph.
+If the user's description matches "I know the topology, the LLM just picks tools within nodes", redirect via `Skill(skill: "author-strategy")` — they don't need a planner, they need a graph. Redirecting means running `author-strategy` end-to-end and writing the graph DSL code to disk per its Step 8 — not stopping at a prose explanation. After running `author-strategy`, also surface (in your response) the topology as the disqualifying signal for a planner and the extra-LLM-round-trip cost reason — write these as comments at the top of the produced strategy file.
 
-Then ask the user one question:
+Then pick the planner variant from the user's description without blocking on a clarifying question:
 
-- LLM-based (default — flexible, expensive in tokens) or GOAP (classical — deterministic planning step, requires typed state)?
+- LLM-based (default) — pick when ordering depends on runtime findings and state is unstructured prose
+- GOAP — pick only when the user names "GOAP", "classical planner", "state space search", or supplies a typed `data class` state and precondition/effect pairs
+- `llmBasedWithCritic` — pick when the user names "critic", "verify", or asks for output-quality grading
 
-Proceed to Step 2 for LLM-based or Step 3 for GOAP.
+Proceed to Step 2 for LLM-based / critic, Step 3 for GOAP.
 
 ## Step 2 — LLM-Based Planner
 

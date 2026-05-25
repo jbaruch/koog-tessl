@@ -141,6 +141,7 @@ Proceed immediately to Step 8.
 
 ## Step 8 — Hand Off
 
+- Write the strategy definition and the modified agent construction to the project's source tree (typically `src/main/kotlin/com/example/Strategy.kt` and `Main.kt`). Create files if they don't exist — do not respond with prose only; the user expects code on disk
 - Pass the strategy into `AIAgent(strategy = myStrategy("name"), ...)`. If the strategy isn't `singleRunStrategy` (the default), the `strategy =` parameter must be named explicitly
 - Run `./gradlew build` to confirm it compiles. The most common failure is a node-type mismatch — go back to Step 3
 - If the strategy needs runtime-decided ordering rather than compile-time topology, this is the wrong primitive — invoke `Skill(skill: "use-planner")` instead

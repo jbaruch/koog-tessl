@@ -2,6 +2,42 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.4] — 2026-05-26
+
+### Changed
+
+- Hardened skills against the **file-write** failure mode observed in 0.3.1 eval run `019e60f5` and confirmed in the partial re-run `019e613e`: the scorer reads files from the solution directory, but several skills told the agent "produce ... as part of your response" — which the agent satisfied with stdout prose that the scorer can't see. Added explicit "write to file path X / create if missing / do not respond with prose only" directives to the action steps in:
+  - `add-observability` Step 3 — write modified construction to `Main.kt`, dependency to `build.gradle.kts`
+  - `manage-state` Step 2 — write boundary-node body to the strategy file
+  - `persist-chat-history` Step 4 — write construction + handler + dependency to project tree
+  - `add-tool` Step 2 — write tool class + agent construction to source tree
+  - `author-strategy` Step 8 — write strategy + agent construction to source tree
+
+- `add-tool` Step 1 routing — annotated-tool default now defers to Step 2 (typed `Tool<TArgs,TResult>`) when the user's existing function takes a `data class` parameter or returns a typed result; the previous "default to Step 1" rule wrapped typed signatures in flat-primitive annotated tools and lost the type contract
+
+- `handle-agent-events` Step 2 — added the same file-write directive as the other patched skills; round-2 eval `019e6149` showed this skill is non-deterministic when only "produce as part of response" is documented (round 1: 100, round 2: 0)
+
+- `use-planner` Step 1 redirect to `author-strategy` — made the redirect actionable: it now runs `author-strategy` end-to-end and writes the graph DSL code per author-strategy's Step 8 plus the topology and round-trip-cost reasoning as comments at the top of the produced file; the previous wording let the agent stop at a prose explanation
+
+- Hardened skills against the "no-output" failure mode observed in 0.3.1 eval run `019e60f5`:
+  - `add-observability` Step 2 — replaced blocking "Ask the user which backend" with a non-blocking pick + OTLP default, plus an explicit "produce the modified construction and Gradle block in your response" handoff; fixes the −100pp lift on `add-observability-langfuse`
+  - `wire-ktor-server` Step 2 — split into minimal install (mandatory) vs MCP/HOCON add-ons (skipped unless named); skill ends with an explicit "produce the modified module + Gradle change as labeled code blocks" directive; fixes the −28pp lift on `wire-ktor-server-route`
+  - `manage-state` Step 2 — committed to `HistoryCompressionStrategy.WholeHistory` as the default and moved the other six variants into "use only when the user names them"; fixes the −80pp lift on `manage-state-tldr-mid-phase`
+  - `use-planner` Step 1 — converted the "ask user LLM-based vs GOAP" stall into a pick-by-keywords rule (GOAP only when the user names typed state / classical planner / state space); planner-redirect tasks no longer block on a clarifying question
+- Tightened skill activation routing for planner construction:
+  - `use-planner` description now names `Planners.llmBased`, `Planners.llmBasedWithCritic`, `Planners.goap`, `PlannerAIAgent`, `agents-planner`
+  - `scaffold-agent` description adds an explicit "Do NOT use when the user is constructing a planner / picking a strategy / naming a specific agent shape" exclusion; fixes the mis-activation that pulled `scaffold-agent` for `use-planner-llm-based-triage`
+
+### Removed
+
+- `cache-llm-calls-redis-shared` eval scenario — retired per `plugin-evals.md` "Lift, Not Attainment": baseline 100/100, lift 0pp (Cause #1, universal competence). The partner scenario `cache-llm-calls-refuses-provider-side` still covers `cache-llm-calls` at +100pp lift
+
+### Fixed
+
+- `handle-agent-events-stdout-trace` task — stripped the "arrow indicating start vs end" framing that bled into the criterion "Uses distinct visual markers for start vs end" (`plugin-evals.md` "No Bleeding")
+- `add-tool-typed-args-with-result` task — stripped "they want the tool's input and output to remain these typed shapes — not a JSON blob, not a flattened String" framing that telegraphed `Tool<TArgs,TResult>`; the typed `queryAccount` signature still carries the constraint
+- `persist-chat-history-jdbc` task — replaced "wants conversations to persist by user account" framing with a user-reported bug ("the bot doesn't remember anything we talked about") so the agent must navigate persistence-feature vs chat-history vs LongTermMemory on its own
+
 ## [0.4.3] — 2026-05-26
 
 ### Fixed

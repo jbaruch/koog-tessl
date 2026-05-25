@@ -1,8 +1,10 @@
-# Add a Database Query Tool with Typed Arguments
+# Expose an Account Lookup to the Agent
 
 ## Problem/Feature Description
 
-A developer has a Koog 1.0 agent that helps customer-support staff look up account information. They want to add a tool that queries an internal accounts database. The query takes a structured input — they already have these data classes in their project:
+A developer has a Koog 1.0 agent that helps customer-support staff look up account information. They want the agent to call into their existing account-lookup logic — a `suspend fun queryAccount(req: AccountLookupRequest): AccountLookupResult` that lives in their project today and is also consumed by other (non-agent) code paths.
+
+The function's signature is fixed by those other consumers:
 
 ```kotlin
 @Serializable
@@ -19,12 +21,12 @@ data class AccountLookupResult(
     val openTickets: Int,
     val lastSeenIso: String,
 )
+
+suspend fun queryAccount(req: AccountLookupRequest): AccountLookupResult
 ```
 
-They explicitly say they want the tool's input and output to remain these typed shapes — not a JSON blob, not a flattened String — because downstream code in their project also consumes the typed result.
-
-They've already implemented the actual query logic in a `suspend fun queryAccount(req: AccountLookupRequest): AccountLookupResult` function.
+Make `queryAccount` callable by the agent.
 
 ## Output Specification
 
-Walk through how to expose this typed query to the agent. Produce the modified or new source files in a single response, with each file labeled.
+Walk through how to expose this query to the agent. Produce the modified or new source files in a single response, with each file labeled.

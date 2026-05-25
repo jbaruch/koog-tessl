@@ -26,6 +26,8 @@ Proceed immediately to Step 2.
 
 ## Step 2 — Install Inside the Trailing Lambda
 
+Write the modified agent construction to the project's main file (typically `src/main/kotlin/com/example/Main.kt`) and the dependency line to `build.gradle.kts`. Create files if they don't exist — do not respond with prose only; the user expects code on disk.
+
 ```kotlin
 import ai.koog.agents.features.eventhandler.handleEvents
 

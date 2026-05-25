@@ -1,8 +1,10 @@
-# Print a Live Trace of Tool Calls During a Demo
+# See What the Agent Is Doing During a Demo
 
 ## Problem/Feature Description
 
-A developer is preparing a conference demo of a Koog 1.0 agent. During the live demo they want the audience to see each tool call as it happens — a one-line print to stdout for every tool invocation, showing the tool name and arguments, with an arrow indicating start vs end. They don't want full production observability for this — no Langfuse, no OTel collector — just human-readable stdout output for the projector.
+A developer is preparing a conference demo of a Koog 1.0 agent. The agent calls several tools during a run. The developer wants the audience to follow along — they want a lightweight surface that shows what the agent is doing, when, in a format readable on a projector at the back of a room.
+
+They explicitly do NOT want production telemetry — no Langfuse, no OTel collector, no metric dashboards. They just want the lightest-weight thing Koog offers that surfaces per-step activity to the developer's terminal during the demo.
 
 The agent is otherwise unchanged from a basic `AIAgent(...)` call.
 

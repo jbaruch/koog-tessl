@@ -47,21 +47,22 @@ Finish here.
 
 ## Step 2 — History Compression
 
-Long agentic runs blow the context window. Compress inside a write session at deliberate points — end of a phase, start of a subgraph — not at every node.
+Long agentic runs blow the context window. Compress inside a write session at deliberate points — end of a phase, start of a subgraph — not at every node. Place the compression call in the **boundary node** the user identified (one node, not every node); "every node" wastes tokens summarizing intermediate state the next step needed.
+
+Default to `HistoryCompressionStrategy.WholeHistory` (a single TL;DR) unless the user explicitly asks for last-N, time-window, chunked, or fact-extraction shape. Write the modified node body to the file that defines the boundary node (typically the file containing the strategy definition, e.g., `src/main/kotlin/com/example/Strategy.kt`). If no such file exists in the project, create one — do not respond with prose only; the user expects the modified code on disk.
 
 ```kotlin
 import ai.koog.agents.core.dsl.extension.HistoryCompressionStrategy
 
-// inside a node body
+// inside the boundary node body (between exploration and drafting, for example)
 llm.writeSession {
-    replaceHistoryWithTLDR()   // collapses everything into a single TL;DR summary
+    replaceHistoryWithTLDR(strategy = HistoryCompressionStrategy.WholeHistory)
 }
 ```
 
-Strategy variants:
+Other strategy variants (use only when the user names them):
 
-- `HistoryCompressionStrategy.NoCompression` — keep everything (default)
-- `HistoryCompressionStrategy.WholeHistory` — TL;DR everything as one summary
+- `HistoryCompressionStrategy.NoCompression` — keep everything
 - `HistoryCompressionStrategy.WholeHistoryMultipleSystemMessages` — multi-message summary
 - `HistoryCompressionStrategy.FromLastNMessages(n)` — keep the last N, drop the rest
 - `HistoryCompressionStrategy.FromTimestamp(instant)` — keep messages after timestamp
@@ -69,8 +70,6 @@ Strategy variants:
 - `HistoryCompressionStrategy.FactRetrieval(concepts)` — extract structured facts about named concepts
 
 `FactRetrieval` was extracted from the removed `AgentMemory` feature in 1.0 — it's now usable standalone in `agents-core`, no memory feature required.
-
-Pick the compression point. "Every node" is wrong — you spend tokens summarizing intermediate state the next step needed.
 
 Finish here.
 

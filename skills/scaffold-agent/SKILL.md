@@ -6,7 +6,9 @@ description: >
   top-level factory, and an environment-variable wiring for the LLM API key. Use when the
   user asks to "create a new Koog agent", "start a Koog project", "scaffold an agent app",
   or provides a directory and says "set up Koog here". Produces a runnable hello-world
-  agent that the user can extend with tools, strategies, or features.
+  agent that the user can extend with tools, strategies, or features. Do NOT use when
+  the user is constructing a planner, picking a strategy variant, or naming a specific
+  agent shape inside an existing project — use `use-planner` or `author-strategy` instead.
 ---
 
 # Scaffold Agent Skill

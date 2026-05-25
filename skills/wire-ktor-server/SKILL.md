@@ -24,7 +24,7 @@ Proceed immediately to Step 2.
 
 ## Step 2 — Install the Plugin
 
-In the `Application` module, install the `Koog` plugin:
+In the `Application` module, install the `Koog` plugin. The minimal install — required for any Koog-on-Ktor deployment — is just the prompt-executor wiring:
 
 ```kotlin
 import ai.koog.ktor.Koog
@@ -32,27 +32,18 @@ import io.ktor.server.application.*
 
 fun Application.module() {
     install(Koog) {
-        // Per-provider executor wiring
         promptExecutor(simpleOpenAIExecutor(System.getenv("OPENAI_API_KEY")))
-
-        // MCP servers (see Step 3)
-        mcp {
-            streamableHttp(
-                url = "https://mcp.github.example/v1",
-                httpClient = client,
-            )
-        }
-
-        // Agent config can also load from application.conf — see Step 4
     }
 }
 ```
 
 `install(Koog) { ... }` is the entry point. The plugin's companion implements Ktor's `Plugin<ApplicationCallPipeline, KoogAgentsConfig, Koog>` so it composes with other Ktor plugins (`ContentNegotiation`, `Authentication`, `CallLogging`) the usual way.
 
-Proceed immediately to Step 3.
+Step 3 (MCP) and Step 4 (HOCON config) are optional add-ons. Only include them if the user's request mentions MCP servers or external config. For a minimal `POST /agent` route, skip directly to Step 5.
 
-## Step 3 — Register MCP Servers Inside the Plugin
+Proceed immediately to Step 3 if MCP is required; otherwise jump to Step 5.
+
+## Step 3 — Register MCP Servers Inside the Plugin (Optional)
 
 The Ktor plugin exposes a typed `mcp { ... }` block that registers MCP servers as part of the plugin configuration — no separate `McpToolRegistryProvider` plumbing in user code:
 
@@ -75,7 +66,7 @@ Use Streamable HTTP unless the remote server only supports SSE. For the standalo
 
 Proceed immediately to Step 4.
 
-## Step 4 — Load Config from `application.conf` (Optional)
+## Step 4 — Load Config from `application.conf` (Optional — skip unless user names HOCON/YAML config)
 
 For deployments where agent shape should be configuration, not code, `KoogAgentsConfig` reads `application.conf` (HOCON) or `application.yaml` via `loadAgentsConfig()`:
 
@@ -120,4 +111,4 @@ routing {
 
 For streaming responses, use `nodeLLMRequestStreaming` inside a custom strategy (see `use-llm-node-variants`) and Ktor's `respondBytesWriter { ... }` or SSE/WebSocket transport.
 
-Finish here.
+Produce the modified `Application.module()` and the Gradle dependency change as labeled code blocks in your response. Finish here.
