@@ -6,7 +6,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # patch-version-publish writes the auto-bumped version back to main as a
+  # `Bump ... [skip ci]` commit after a successful publish; PR fallback opens
+  # a branch if direct push is blocked. Both need write access on the default
+  # GITHUB_TOKEN. Without these the action exits 128 on the post-publish step
+  # even when the tile reached the registry.
+  contents: write
+  pull-requests: write
 
 jobs:
   publish:
