@@ -35,8 +35,9 @@ If the user's description matches "I know the topology, the LLM just picks tools
 - Write the graph DSL code to disk per `author-strategy`'s Step 8
 - Add a top-of-file comment in the produced strategy file naming the topology as the disqualifying signal for a planner
 - Add a second top-of-file comment naming the extra LLM round-trips a planner would have added
+- Finish here — do not continue into planner-variant selection
 
-Then pick the planner variant from the user's description without blocking on a clarifying question:
+Otherwise, pick the planner variant from the user's description without blocking on a clarifying question:
 
 - LLM-based (default) — pick when ordering depends on runtime findings and state is unstructured prose
 - GOAP — pick only when the user names "GOAP", "classical planner", "state space search", or supplies a typed `data class` state and precondition/effect pairs
