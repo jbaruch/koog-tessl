@@ -2,6 +2,12 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.1] — 2026-05-26
+
+### Added
+
+- `.github/workflows/publish.yml` — `tessl skill review --threshold 85` gate before `tessl tile publish .` via `jbaruch/coding-policy/.github/actions/skill-review@ef67ffe5` (changed-skills loop). Closes the `context-artifacts` Mandatory Review gap flagged on #7; below-threshold skill scores now block publish. Checkout step bumped to `fetch-depth: 0` so the action's `git diff $github.event.before..HEAD` can resolve the prior commit. Closes #8
+
 ## [0.4.0] — 2026-05-25
 
 ### Added
