@@ -115,7 +115,7 @@ Proceed immediately to Step 5.
 - If the MCP server is locally launched, remind the user to set any required environment variables (the values they named in Step 1) before running the agent
 - Tell the user one diagnostic check: when the agent runs, the first LLM round-trip should include the MCP tools in its tool schema. If the LLM never picks an MCP tool, the most likely cause is that the MCP server didn't expose the tool. Query the server's `tools/list` endpoint directly to confirm.
 
-Steps 1–5 covered the client side. If the user is **authoring** an MCP server (not just consuming one), proceed to Step 6.
+Steps 1–5 covered the client side. If the user is consuming an existing MCP server (the common case), finish here. If the user is **authoring** an MCP server, proceed to Step 6.
 
 ## Step 6 — Author an MCP Server (Optional)
 
@@ -129,7 +129,7 @@ implementation("ai.koog:agents-mcp-server-jvm:1.0.0-beta")
 
 Same `1.0.0-beta` and `-jvm`-suffix gotchas from Step 2 apply.
 
-The same `@Tool` / `@LLMDescription` / `ToolSet` you'd register on a Koog agent (Skill: `add-tool`) is what you expose. Wrap it in a `ToolRegistry` and hand to `startStdioMcpServer`:
+The same `@Tool` / `@LLMDescription` / `ToolSet` you'd register on a Koog agent via `Skill(skill: "add-tool")` is what you expose. Wrap it in a `ToolRegistry` and hand to `startStdioMcpServer`:
 
 ```kotlin
 import ai.koog.agents.core.tools.ToolRegistry
