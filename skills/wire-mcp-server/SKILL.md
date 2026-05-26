@@ -113,4 +113,38 @@ Proceed immediately to Step 5.
 
 - Run `./gradlew build` to confirm the project still compiles. If it doesn't, the most common cause is a missing import — surface the exact error
 - If the MCP server is locally launched, remind the user to set any required environment variables (the values they named in Step 1) before running the agent
-- Tell the user one diagnostic check: when the agent runs, the first LLM round-trip should include the MCP tools in its tool schema. If the LLM never picks an MCP tool despite the system prompt suggesting it should, the most likely cause is that the MCP server didn't expose the tool — query the server's `tools/list` endpoint directly to confirm. Finish here.
+- Tell the user one diagnostic check: when the agent runs, the first LLM round-trip should include the MCP tools in its tool schema. If the LLM never picks an MCP tool, the most likely cause is that the MCP server didn't expose the tool. Issue the MCP `tools/list` JSON-RPC method against the server (over its configured transport) to confirm what it actually advertises.
+
+Steps 1–5 covered the client side. If the user is consuming an existing MCP server (the common case), finish here. If the user is **authoring** an MCP server, proceed to Step 6.
+
+## Step 6 — Author an MCP Server (Optional)
+
+Use when the user asks to "expose tools over MCP", "build an MCP server", or "publish a ToolSet as an MCP endpoint". Skip otherwise.
+
+Add the server module:
+
+```kotlin
+implementation("ai.koog:agents-mcp-server-jvm:1.0.0-beta")
+```
+
+Same `1.0.0-beta` and `-jvm`-suffix gotchas from Step 2 apply.
+
+The same `@Tool` / `@LLMDescription` / `ToolSet` you'd register on a Koog agent via `Skill(skill: "add-tool")` is what you expose. Wrap it in a `ToolRegistry` and hand to `startStdioMcpServer`:
+
+```kotlin
+import ai.koog.agents.core.tools.ToolRegistry
+import ai.koog.agents.core.tools.reflect.asTools
+import ai.koog.agents.mcp.server.startStdioMcpServer
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.runBlocking
+
+fun main() = runBlocking {
+    val registry = ToolRegistry { tools(YourTools().asTools()) }  // replace YourTools with the actual ToolSet class
+    startStdioMcpServer(registry)
+    awaitCancellation()
+}
+```
+
+The `awaitCancellation()` keeps the process alive while the parent (a Koog agent client via `fromProcess`, or any MCP-compliant client) drives requests over stdio. Write `Path: src/main/kotlin/com/example/McpServer.kt` for the entry point.
+
+Finish here.

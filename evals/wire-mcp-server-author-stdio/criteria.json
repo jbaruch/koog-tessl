@@ -1,0 +1,31 @@
+{
+  "context": "Tests whether the agent recognizes the MCP server-authoring path (publishing a ToolSet as a stdio MCP service) rather than confusing it with the MCP client path (consuming a remote server) or rolling a bespoke RPC layer.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Calls startStdioMcpServer",
+      "max_score": 30,
+      "description": "Produces a main() that calls ai.koog.agents.mcp.server.startStdioMcpServer(registry) inside runBlocking. Does NOT reach for McpToolRegistryProvider.fromProcess (that's the client side) or hand-roll a JSON-RPC server on top of stdin/stdout"
+    },
+    {
+      "name": "Adds the agents-mcp-server dependency",
+      "max_score": 25,
+      "description": "Adds ai.koog:agents-mcp-server-jvm:1.0.0-beta to build.gradle.kts. Both the -jvm suffix AND the 1.0.0-beta version are required — the umbrella koog-agents does not pull this module, the artifact does not publish at 1.0.0 stable, and Gradle KMP variant resolution needs the -jvm suffix at this version"
+    },
+    {
+      "name": "Wraps the existing ToolSet in a ToolRegistry",
+      "max_score": 20,
+      "description": "Builds ToolRegistry { tools(CalendarTools().asTools()) } from the developer's existing class. Reuses the existing @Tool/@LLMDescription annotations as-is — does not introduce a parallel annotation scheme or rewrite the ToolSet"
+    },
+    {
+      "name": "Keeps the process alive after startup",
+      "max_score": 15,
+      "description": "Calls awaitCancellation() (or equivalent suspending hold) after startStdioMcpServer so the process stays alive while the parent MCP client drives requests over stdio. Without this the main() returns immediately and the server exits"
+    },
+    {
+      "name": "Does not reach for the client transport surface",
+      "max_score": 10,
+      "description": "Does NOT call McpToolRegistryProvider.streamableHttp / fromSseUrl / fromProcess. The developer wants to PUBLISH tools, not consume someone else's MCP server — the client transports are the wrong side of the boundary"
+    }
+  ]
+}
