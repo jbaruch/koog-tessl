@@ -54,10 +54,15 @@ Skip this step entirely if the user did not name MCP servers (no `mcp { ... }` b
 The Ktor plugin exposes a typed `mcp { ... }` block that registers MCP servers as part of the plugin configuration — no separate `McpToolRegistryProvider` plumbing in user code:
 
 ```kotlin
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+
+val httpClient = HttpClient(CIO)
+
 install(Koog) {
     mcp {
         // streamable HTTP (1.0 primary transport)
-        streamableHttp(url = "https://mcp.github.example/v1", httpClient = client)
+        streamableHttp(url = "https://mcp.github.example/v1", httpClient = httpClient)
 
         // SSE fallback
         sse(url = "https://legacy-mcp.example/sse")
