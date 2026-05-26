@@ -2,6 +2,16 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.5] — 2026-05-26
+
+### Added
+
+- `wire-mcp-server` Step 6 — optional server-side `startStdioMcpServer` flow for users authoring an MCP server (not just consuming one). Pulls `ai.koog:agents-mcp-server-jvm:1.0.0-beta` (same beta + `-jvm`-suffix gotchas as the client module). Exposes a `ToolRegistry` over stdio with `awaitCancellation()` keeping the process alive
+- `domain-model-subtask-pipeline` Step 7 — `MultiLLMPromptExecutor` callout for cross-provider per-subgraph model selection. The skill teaches per-phase `llmModel = ...` but the per-provider executors (`simpleOpenAIExecutor` / `simpleAnthropicExecutor`) only know one provider; when a strategy mixes (e.g., `OpenAIModels.Chat.O3` for the verifier and `AnthropicModels.Sonnet_4_5` for the deployer), the agent needs a `MultiLLMPromptExecutor` with one client per provider
+- `persist-chat-history` Step 5 — multi-turn footnote: the same agent instance can call `agent.run(input, sessionId = ...)` repeatedly; ChatMemory accumulates context across calls, so a `while (true)` driver loop maintains conversation without reconstructing the agent
+- `persist-chat-history` Step 6 — new anti-pattern section: **don't use chat-history as a fact store**. Symptoms (date-prefixed pseudo-turns, synthetic `Message.Assistant` claims about actions the agent never took, queryable structured data forced into a sequential channel) and the right primitives for each shape (`LongTermMemory` for cross-session facts; `@Tool` for queryable structured data; `systemPrompt` for small fixed context; `storage` for run-scoped state). Custom `ChatHistoryProvider` stays legitimate for replaying real conversation messages from external sources
+- `add-observability` Step 3 — one-line clarification on `setVerbose(true)` semantics: it emits prompts, completions, and token counts on each span
+
 ## [0.4.4] — 2026-05-26
 
 ### Changed

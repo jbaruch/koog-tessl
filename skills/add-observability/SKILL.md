@@ -56,7 +56,7 @@ val agent = AIAgent(
     systemPrompt = "...",
 ) {
     install(OpenTelemetry) {
-        setVerbose(true)
+        setVerbose(true)  // emit prompts, completions, and token counts on each span
         addLangfuseExporter(
             traceAttributes = listOf(
                 CustomAttribute("langfuse.session.id", System.getenv("LANGFUSE_SESSION_ID") ?: ""),

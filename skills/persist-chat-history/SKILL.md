@@ -103,4 +103,27 @@ agent.run("Following up on the bug from yesterday", sessionId = resumedSessionId
 
 Don't store the session ID inside the agent or in `AIAgentStorage` — that storage is run-scoped. The session ID is the user's identity in the chat history backend; persist it in your application's user/session layer.
 
+Multi-turn within one process: the same agent instance can call `agent.run(input, sessionId = ...)` repeatedly. ChatMemory accumulates the conversation, so a `while (true) { agent.run(submissions.receive(), sessionId = userId) }` loop maintains context across user turns without reconstructing the agent.
+
+Proceed immediately to Step 6.
+
+## Step 6 — Anti-Pattern: Don't Use Chat-History as a Fact Store
+
+The chat-history feature is for **real conversation turns** between the user and the agent. Do not synthesise fake `Message.User` / `Message.Assistant` entries to inject domain facts the agent "should remember" — even if it's tempting to implement `ChatHistoryProvider` with a hand-rolled list of pseudo-turns.
+
+Symptoms that you've gone down this wrong path:
+
+- You're prepending dates like `[2025-06-19]` to each pseudo-turn to stop the model from treating the latest entry as "today's" task. The data isn't conversation-shaped; the model is correctly confused
+- The synthetic `Message.Assistant` content makes claims about actions the agent never actually took
+- The data is queryable / filterable (last 90 days, by organizer, by category) but you're forcing it through a sequential message channel
+
+The right Koog primitive depends on the data's shape:
+
+- **Facts the agent should retrieve across sessions** → `LongTermMemory` (see `Skill(skill: "manage-state")` Step 3) — designed for stored facts with explicit `SearchQueryProvider` retrieval
+- **Queryable structured data** → expose as a `@Tool` (see `Skill(skill: "add-tool")`) — `getRecentlyUsedFlavors(organizer)`, `getPriorDeclines(eventId)`, etc.
+- **Small fixed contextual data** (under ~10 entries, every run) → put it in the `systemPrompt`
+- **Run-scoped state seeded in a setup node** → `storage.set(key, value)` (see `Skill(skill: "manage-state")` Step 1)
+
+A custom `ChatHistoryProvider` is legitimate when the source IS conversation messages — replaying a stored chat from an external system, mirroring a Slack thread, etc. It is not legitimate as a backdoor for facts.
+
 Finish here.

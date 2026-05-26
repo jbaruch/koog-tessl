@@ -174,6 +174,18 @@ Pass the strategy explicitly as `strategy =`. It is not the default.
 - The agent's registry is one flat namespace. Don't register tools per-subgraph
 - Set `maxIterations` higher than the default 50. Pipelines chain LLM calls
   and the default runs out fast
+- When per-subgraph `llmModel` values span providers (e.g., `OpenAIModels.Chat.O3` for the verifier, `AnthropicModels.Sonnet_4_5` for the deployer), the agent needs a `MultiLLMPromptExecutor` with one client per provider. `simpleOpenAIExecutor` / `simpleAnthropicExecutor` only know one provider each and will fail at runtime when a subgraph asks for the other:
+
+  ```kotlin
+  import ai.koog.prompt.executor.clients.anthropic.AnthropicLLMClient
+  import ai.koog.prompt.executor.clients.openai.OpenAILLMClient
+  import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
+
+  val executor = MultiLLMPromptExecutor(
+      OpenAILLMClient(System.getenv("OPENAI_API_KEY")),
+      AnthropicLLMClient(System.getenv("ANTHROPIC_API_KEY")),
+  )
+  ```
 
 Run `./gradlew build`. The most common failure is a type mismatch on an edge
 predicate. The chain only compiles when every subgraph's output type matches
