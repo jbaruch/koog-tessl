@@ -19,7 +19,13 @@ Available actions:
 - **Step 2** — Typed tool (subclass `Tool<TArgs, TResult>`): when you need typed arguments with custom serialization or programmatic schema control
 - **Step 3** — Sub-agent-as-tool (wrap another `AIAgent` as a tool): when the step is itself agent-shaped — its own tools, its own model, its own strategy
 
-If the user is ambiguous, default to Step 1 (annotated). Only escalate to Step 2 or 3 when the user's description names a need that Step 1 cannot meet — typed args, runtime registration, or "this is itself an agent."
+If the user is ambiguous, default to Step 1 (annotated). Escalate to Step 2 (typed `Tool<TArgs,TResult>`) when **any** of these is true:
+
+- The user supplies an existing function whose parameter is a `data class`, not flat primitives
+- The user's existing function returns a `data class` or other typed result
+- The user names "typed args", "typed result", "Tool subclass", "ToolDescriptor", or "no String return"
+
+Escalate to Step 3 only when the new "tool" is itself agent-shaped.
 
 ## Step 1 — Annotated Tool
 
@@ -64,7 +70,15 @@ Finish here.
 
 ## Step 2 — Typed Tool (`Tool<TArgs, TResult>`)
 
-Use when annotations don't fit — typed arguments with custom serialization, programmatic schema control, or registration based on runtime data.
+Use when annotations don't fit — typed arguments with custom serialization, programmatic schema control, registration based on runtime data, or any case where the user's existing function takes a typed `data class` parameter.
+
+Write the tool class and the modified agent construction to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/AccountLookupTool.kt` — typed `Tool<TArgs,TResult>` subclass (rename to match the tool's actual name; do not write `<Name>Tool.kt` literally)
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction registering the tool
+- `Path: build.gradle.kts` — any new dependency lines
+
+Create files if they don't exist. Do not respond with prose only. Replace placeholder names in the path with the user's actual tool name.
 
 ```kotlin
 import ai.koog.agents.core.tools.Tool

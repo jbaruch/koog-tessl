@@ -27,11 +27,11 @@ Proceed immediately to Step 2.
 
 ## Step 2 — Pick a Backend
 
-Ask the user:
+Match what the user has available without blocking on a clarifying question:
 
-- **JDBC** (`chat-history-jdbc`) — any JDBC-compatible database (Postgres, MySQL, etc.). Most common
-- **AWS** (`chat-history-aws`) — DynamoDB or AWS-hosted alternatives. For AWS-native deployments
-- **SQL-typed chat memory** (`chat-memory-sql`) — SQL backend with stronger typing over chat messages. Use when message shape varies (attachments, tool calls) and you want a typed schema
+- **JDBC** (`chat-history-jdbc`) — any JDBC-compatible database (Postgres, MySQL, etc.). Default when the user names Postgres / MySQL / a JDBC URL / env vars like `DB_URL`
+- **AWS** (`chat-history-aws`) — DynamoDB or AWS-hosted alternatives. Pick when the user names DynamoDB / AWS / S3
+- **SQL-typed chat memory** (`chat-memory-sql`) — SQL backend with stronger typing over chat messages. Pick when the user explicitly asks for typed chat memory
 
 Proceed immediately to Step 3.
 
@@ -50,6 +50,14 @@ For JDBC, also include the driver for the actual database (Postgres, etc.) — t
 Proceed immediately to Step 4.
 
 ## Step 4 — Install the Feature
+
+Write the modified agent construction, the dependency, and any handler updates to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction (or the file containing the `AIAgent(...)` call)
+- `Path: build.gradle.kts` — appended dependency line
+- If the user named a route/handler file (e.g., `Routes.kt`, `ChatController.kt`), write the updated handler under a concrete path using that filename — for example `Path: src/main/kotlin/com/example/Routes.kt`. Never emit a literal angle-bracket placeholder filename
+
+Create files if they don't exist. Do not respond with prose only.
 
 Install in the `AIAgent(...)` trailing lambda. JDBC example:
 

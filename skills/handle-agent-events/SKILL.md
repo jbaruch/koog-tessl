@@ -26,6 +26,13 @@ Proceed immediately to Step 2.
 
 ## Step 2 — Install Inside the Trailing Lambda
 
+Write the modified agent construction and the dependency to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction (or whichever file contains the `AIAgent(...)` call)
+- `Path: build.gradle.kts` — appended dependency line
+
+Create files if they don't exist. Do not respond with prose only.
+
 ```kotlin
 import ai.koog.agents.features.eventhandler.handleEvents
 

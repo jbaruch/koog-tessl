@@ -24,18 +24,23 @@ Proceed immediately to Step 2.
 
 ## Step 2 — Pick a Backend
 
-Ask the user which backend to use:
+Use whichever backend the user named. If the user did not name one, default to OTLP. Do not block on a clarifying question.
 
 - Langfuse — hosted LLM-observability product; needs project URL + keys via env vars
 - Weave — Weights & Biases LLM observability
 - Datadog — for orgs that already use Datadog APM
 - OTLP — raw OpenTelemetry Protocol endpoint; works with any compliant collector
 
-If the user doesn't have one in mind, default to OTLP — it's transport-agnostic and works with self-hosted collectors. They can swap to a vendor later.
-
-Proceed immediately to Step 3.
+Proceed immediately to Step 3. Step 3 writes the actual code to disk; do not stop at prose.
 
 ## Step 3 — Install the Feature
+
+Write the modified agent construction and the dependency to disk — do not respond with prose only. Use explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction (or whichever file contains the `AIAgent(...)` call)
+- `Path: build.gradle.kts` — appended dependency line
+
+Create files if they don't exist.
 
 Install inside the `AIAgent(...)` trailing lambda. The feature is multiplatform (#1942 in 1.0), so the common-code block stays portable; JVM-only knobs come in Step 4.
 

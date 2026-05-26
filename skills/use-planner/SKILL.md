@@ -5,17 +5,25 @@ description: >
   next action each turn, optionally with a critic loop) or GOAP (a classical planner
   searches a typed state space toward a goal). Pulls `ai.koog:agents-planner`, constructs
   the planner strategy, and wires it into `AIAgent(...)`. Use when the user asks to
-  "use a planner", "let the agent plan", "use GOAP", "build a planning agent", or
-  describes an open-ended task whose step sequence depends on runtime context.
+  "use a planner", "let the agent plan", "use GOAP", "build a planning agent",
+  names any of `Planners.llmBased`, `Planners.llmBasedWithCritic`, `Planners.goap`,
+  `PlannerAIAgent`, `agents-planner`, or describes an open-ended task whose step
+  sequence depends on runtime context.
 ---
 
 # Use Planner Skill
 
 This skill is an action router — pick the step that matches the user's intent and execute only that step. Do not run other steps; do not parallelize.
 
+Chaining exception (exhaustive — overrides "Do not run other steps" only as listed):
+
+- Step 1 is the entry point. It either redirects (via `Skill(skill: "author-strategy")`) and finishes, or chains to Step 2 / Step 3 to wire the picked planner variant
+- Steps 2 and 3 are terminal — execute one, then finish. Do not chain Step 2 to Step 3 or vice versa
+- Direct entry into Step 2 or Step 3 is permitted only when the caller already determined the variant; otherwise enter via Step 1
+
 Available actions:
 
-- **Step 1** — Confirm the planner is the right primitive. If not, redirect via `Skill(skill: "author-strategy")`. If yes, the user picks LLM-based or GOAP and the relevant Step (2 or 3) follows
+- **Step 1** — Confirm the planner is the right primitive. If not, redirect via `Skill(skill: "author-strategy")` and finish. If yes, pick LLM-based or GOAP and chain into the relevant Step (2 or 3)
 - **Step 2** — LLM-based planner (`Planners.llmBased` or `Planners.llmBasedWithCritic`)
 - **Step 3** — GOAP planner (`Planners.goap`)
 
@@ -27,13 +35,20 @@ The graph DSL (`strategy { ... }`) is the right default. A planner is the right 
 - The action space is large enough that hardcoding edges would be a maintenance burden
 - You're willing to trade extra LLM round-trips for autonomy
 
-If the user's description matches "I know the topology, the LLM just picks tools within nodes", redirect via `Skill(skill: "author-strategy")` — they don't need a planner, they need a graph.
+If the user's description matches "I know the topology, the LLM just picks tools within nodes", redirect:
 
-Then ask the user one question:
+- Invoke `Skill(skill: "author-strategy")` and run it end-to-end through its Step 8
+- Write the graph DSL code to disk per `author-strategy`'s Step 8
+- Add a top-of-file comment in the produced strategy file naming the topology as the disqualifying signal for a planner
+- Add a second top-of-file comment naming the extra LLM round-trips a planner would have added
+- Finish here — do not continue into planner-variant selection or Step 2 / Step 3
 
-- LLM-based (default — flexible, expensive in tokens) or GOAP (classical — deterministic planning step, requires typed state)?
+**Only if you did NOT redirect above** (the planner genuinely fits), pick the variant from the user's description without blocking on a clarifying question:
 
-Proceed to Step 2 for LLM-based or Step 3 for GOAP.
+- LLM-based (default) — pick when ordering depends on runtime findings and state is unstructured prose. Step 2 also shows the optional critic-loop sub-variant for output-quality grading
+- GOAP — pick only when the user names "GOAP", "classical planner", "state space search", or supplies a typed `data class` state and precondition/effect pairs
+
+Proceed to Step 2 for LLM-based, Step 3 for GOAP. This handoff applies only when the planner fits; the redirect branch above already finished.
 
 ## Step 2 — LLM-Based Planner
 

@@ -1,10 +1,12 @@
-# Let Users Resume Conversations Across Days
+# Returning Users Lose Their Conversation
 
 ## Problem/Feature Description
 
-A developer is building a customer-support chatbot powered by a Koog 1.0 agent. Today, every page reload starts a fresh conversation — the user has to re-explain their context. The developer wants conversations to persist by user account, so a user who returns tomorrow continues where they left off.
+A developer is building a customer-support chatbot powered by a Koog 1.0 agent. They have a bug report from users: "When I come back tomorrow, the bot doesn't remember anything we talked about — I have to re-explain my whole problem from scratch."
 
-They have a Postgres database available; the JDBC URL and credentials are in environment variables (`DB_URL`, `DB_USER`, `DB_PASSWORD`). They mentioned: "Each authenticated user has a userId — that's the session boundary for me."
+The agent today is a plain `AIAgent(...)` invocation per HTTP request. Each authenticated user has a stable `userId` that the route handler already has in scope. The developer has a Postgres database available; the JDBC URL and credentials are in environment variables (`DB_URL`, `DB_USER`, `DB_PASSWORD`).
+
+They asked for whichever Koog feature fits this.
 
 ## Output Specification
 

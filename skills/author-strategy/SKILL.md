@@ -141,6 +141,10 @@ Proceed immediately to Step 8.
 
 ## Step 8 — Hand Off
 
+- Write the strategy definition and the modified agent construction to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
+  - `Path: src/main/kotlin/com/example/Strategy.kt` — strategy definition with the graph DSL
+  - `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction passing `strategy = ...`
+  - Create files if they don't exist. Do not respond with prose only
 - Pass the strategy into `AIAgent(strategy = myStrategy("name"), ...)`. If the strategy isn't `singleRunStrategy` (the default), the `strategy =` parameter must be named explicitly
 - Run `./gradlew build` to confirm it compiles. The most common failure is a node-type mismatch — go back to Step 3
 - If the strategy needs runtime-decided ordering rather than compile-time topology, this is the wrong primitive — invoke `Skill(skill: "use-planner")` instead

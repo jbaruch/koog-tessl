@@ -2,6 +2,44 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.4] — 2026-05-26
+
+### Changed
+
+- Hardened skills against the **file-write** failure mode observed in 0.3.1 eval run `019e60f5` and confirmed in the partial re-run `019e613e`: the scorer reads files from the solution directory, but several skills told the agent "produce ... as part of your response" — which the agent satisfied with stdout prose that the scorer can't see. Adopted the `Path:` convention from `scaffold-agent` across the patched skills so the file targets are explicit and unambiguous (full `src/main/kotlin/com/example/<file>` paths plus `build.gradle.kts` at repo root):
+  - `add-observability` Step 3 — `Path: src/main/kotlin/com/example/Main.kt` for the modified agent construction, `Path: build.gradle.kts` for the dependency
+  - `manage-state` Step 2 — `Path: src/main/kotlin/com/example/Strategy.kt` for the boundary-node body
+  - `persist-chat-history` Step 4 — `Path: src/main/kotlin/com/example/Main.kt` + `Path: build.gradle.kts` + a concrete handler path (e.g., `src/main/kotlin/com/example/Routes.kt`) when the user named a handler
+  - `add-tool` Step 2 — `Path: src/main/kotlin/com/example/AccountLookupTool.kt` (concrete tool-name example, rename to match the actual tool) + `Path: src/main/kotlin/com/example/Main.kt` + `Path: build.gradle.kts`
+  - `author-strategy` Step 8 — `Path: src/main/kotlin/com/example/Strategy.kt` for the DSL + `Path: src/main/kotlin/com/example/Main.kt` for the modified construction
+  - `handle-agent-events` Step 2 — `Path: src/main/kotlin/com/example/Main.kt` + `Path: build.gradle.kts`
+  - `wire-ktor-server` Step 5 — `Path: src/main/kotlin/com/example/Application.kt` + `Path: build.gradle.kts`
+
+- `add-tool` Step 1 routing — annotated-tool default now defers to Step 2 (typed `Tool<TArgs,TResult>`) when the user's existing function takes a `data class` parameter or returns a typed result; the previous "default to Step 1" rule wrapped typed signatures in flat-primitive annotated tools and lost the type contract
+
+- `handle-agent-events` Step 2 — adopted the same `Path:` directive; round-2 eval `019e6149` showed the prior prose-only handoff was non-deterministic (round 1: 100, round 2: 0)
+
+- `use-planner` Step 1 redirect to `author-strategy` — made the redirect actionable: it now runs `author-strategy` end-to-end and writes the graph DSL code via `Path:` per author-strategy's Step 8, plus topology and round-trip-cost reasoning as comments at the top of the produced file; the previous wording let the agent stop at a prose explanation. Step 1 also adds a "Finish here — do not continue into planner-variant selection or Step 2 / Step 3" line so the redirect and planner-fits branches are mutually exclusive, and an explicit "Chaining exception (exhaustive — overrides 'Do not run other steps' only as listed)" preamble names the Step 1 → Step 2/3 chain per `skill-authoring`
+
+- Hardened skills against the "no-output" failure mode observed in 0.3.1 eval run `019e60f5`:
+  - `add-observability` Step 2 — replaced blocking "Ask the user which backend" with a non-blocking pick + OTLP default; Step 3 writes via `Path:`; fixes the −100pp lift on `add-observability-langfuse`
+  - `wire-ktor-server` Step 2 — split into minimal install (mandatory) vs MCP/HOCON add-ons; Steps 3 and 4 each open with "Skip this step entirely if..."; Step 5 writes via `Path:`; fixes the −28pp lift on `wire-ktor-server-route`
+  - `manage-state` Step 2 — committed to `HistoryCompressionStrategy.WholeHistory` as the default and moved the other six variants into "use only when the user names them"; fixes the −80pp lift on `manage-state-tldr-mid-phase`
+  - `use-planner` Step 1 — converted the "ask user LLM-based vs GOAP" stall into a pick-by-keywords rule (GOAP only when the user names typed state / classical planner / state space); planner-redirect tasks no longer block on a clarifying question
+- Tightened skill activation routing for planner construction:
+  - `use-planner` description now names `Planners.llmBased`, `Planners.llmBasedWithCritic`, `Planners.goap`, `PlannerAIAgent`, `agents-planner`
+  - `scaffold-agent` description adds an explicit "Do NOT use when the user is constructing a planner / picking a strategy / naming a specific agent shape" exclusion; fixes the mis-activation that pulled `scaffold-agent` for `use-planner-llm-based-triage`
+
+### Removed
+
+- `cache-llm-calls-redis-shared` eval scenario — retired per `plugin-evals.md` "Lift, Not Attainment": baseline 100/100, lift 0pp (Cause #1, universal competence). The partner scenario `cache-llm-calls-refuses-provider-side` still covers `cache-llm-calls` at +100pp lift
+
+### Fixed
+
+- `handle-agent-events-stdout-trace` task — stripped the "arrow indicating start vs end" framing that bled into the criterion "Uses distinct visual markers for start vs end" (`plugin-evals.md` "No Bleeding")
+- `add-tool-typed-args-with-result` task — stripped "they want the tool's input and output to remain these typed shapes — not a JSON blob, not a flattened String" framing that telegraphed `Tool<TArgs,TResult>`; the typed `queryAccount` signature still carries the constraint
+- `persist-chat-history-jdbc` task — replaced "wants conversations to persist by user account" framing with a user-reported bug ("the bot doesn't remember anything we talked about") so the agent must navigate persistence-feature vs chat-history vs LongTermMemory on its own
+
 ## [0.4.3] — 2026-05-26
 
 ### Fixed

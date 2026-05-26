@@ -20,7 +20,7 @@
     {
       "name": "Subscribes to onToolCallFinished",
       "max_score": 15,
-      "description": "Registers an onToolCallFinished handler that prints the tool result (or at minimum a completion marker). The developer asked for arrows indicating start vs end — both sides need handlers"
+      "description": "Registers an onToolCallFinished handler that prints the tool result (or at minimum a completion marker). The task requires surfacing when each tool completes — both start and finish callbacks are needed"
     },
     {
       "name": "Uses distinct visual markers for start vs end",
