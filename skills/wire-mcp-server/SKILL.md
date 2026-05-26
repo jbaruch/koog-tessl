@@ -113,7 +113,7 @@ Proceed immediately to Step 5.
 
 - Run `./gradlew build` to confirm the project still compiles. If it doesn't, the most common cause is a missing import — surface the exact error
 - If the MCP server is locally launched, remind the user to set any required environment variables (the values they named in Step 1) before running the agent
-- Tell the user one diagnostic check: when the agent runs, the first LLM round-trip should include the MCP tools in its tool schema. If the LLM never picks an MCP tool, the most likely cause is that the MCP server didn't expose the tool. Query the server's `tools/list` endpoint directly to confirm.
+- Tell the user one diagnostic check: when the agent runs, the first LLM round-trip should include the MCP tools in its tool schema. If the LLM never picks an MCP tool, the most likely cause is that the MCP server didn't expose the tool. Issue the MCP `tools/list` JSON-RPC method against the server (over its configured transport) to confirm what it actually advertises.
 
 Steps 1–5 covered the client side. If the user is consuming an existing MCP server (the common case), finish here. If the user is **authoring** an MCP server, proceed to Step 6.
 
@@ -139,7 +139,7 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
-    val registry = ToolRegistry { tools(<YourTools>().asTools()) }
+    val registry = ToolRegistry { tools(YourTools().asTools()) }  // replace YourTools with the actual ToolSet class
     startStdioMcpServer(registry)
     awaitCancellation()
 }

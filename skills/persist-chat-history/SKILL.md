@@ -103,7 +103,7 @@ agent.run("Following up on the bug from yesterday", sessionId = resumedSessionId
 
 Don't store the session ID inside the agent or in `AIAgentStorage` — that storage is run-scoped. The session ID is the user's identity in the chat history backend; persist it in your application's user/session layer.
 
-Multi-turn within one process: the same agent instance can call `agent.run(input, sessionId = ...)` repeatedly. ChatMemory accumulates the conversation, so a `while (true) { agent.run(submissions.receive(), sessionId = userId) }` loop maintains context across user turns without reconstructing the agent.
+Multi-turn within one process: the same agent instance can call `agent.run(input, sessionId = ...)` repeatedly. The installed chat-history backend (`JdbcChatHistory` / `ChatHistoryAws` / `ChatMemorySql`) accumulates the message log on each call, so a `while (true) { agent.run(submissions.receive(), sessionId = userId) }` loop maintains context across user turns without reconstructing the agent.
 
 Proceed immediately to Step 6.
 
