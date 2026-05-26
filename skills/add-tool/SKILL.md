@@ -74,11 +74,11 @@ Use when annotations don't fit — typed arguments with custom serialization, pr
 
 Write the tool class and the modified agent construction to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
 
-- `Path: src/main/kotlin/com/example/<Name>Tool.kt` — typed `Tool<TArgs,TResult>` subclass
+- `Path: src/main/kotlin/com/example/AccountLookupTool.kt` — typed `Tool<TArgs,TResult>` subclass (rename to match the tool's actual name; do not write `<Name>Tool.kt` literally)
 - `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction registering the tool
 - `Path: build.gradle.kts` — any new dependency lines
 
-Create files if they don't exist. Do not respond with prose only.
+Create files if they don't exist. Do not respond with prose only. Replace placeholder names in the path with the user's actual tool name.
 
 ```kotlin
 import ai.koog.agents.core.tools.Tool

@@ -49,6 +49,8 @@ Proceed immediately to Step 3.
 
 ## Step 3 — Register MCP Servers Inside the Plugin (Optional)
 
+Skip this step entirely if the user did not name MCP servers (no `mcp { ... }` block needed in the install). Proceed to Step 4 either way.
+
 The Ktor plugin exposes a typed `mcp { ... }` block that registers MCP servers as part of the plugin configuration — no separate `McpToolRegistryProvider` plumbing in user code:
 
 ```kotlin
@@ -71,6 +73,8 @@ Use Streamable HTTP unless the remote server only supports SSE. For the standalo
 Proceed immediately to Step 4.
 
 ## Step 4 — Load Config from `application.conf` (Optional — skip unless user names HOCON/YAML config)
+
+Skip this step entirely if the user did not name HOCON or YAML external config. Proceed to Step 5 either way.
 
 For deployments where agent shape should be configuration, not code, `KoogAgentsConfig` reads `application.conf` (HOCON) or `application.yaml` via `loadAgentsConfig()`:
 
@@ -115,4 +119,9 @@ routing {
 
 For streaming responses, use `nodeLLMRequestStreaming` inside a custom strategy (see `use-llm-node-variants`) and Ktor's `respondBytesWriter { ... }` or SSE/WebSocket transport.
 
-Produce the modified `Application.module()` and the Gradle dependency change as labeled code blocks in your response. Finish here.
+Write the modified module and the dependency to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/Application.kt` — the file containing `Application.module()` (rename to the user's actual filename if different)
+- `Path: build.gradle.kts` — appended `ai.koog:koog-ktor:1.0.0` dependency line
+
+Create files if they don't exist. Do not respond with prose only. Finish here.

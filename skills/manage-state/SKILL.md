@@ -61,15 +61,13 @@ Default to `HistoryCompressionStrategy.WholeHistory` (a single TL;DR) unless the
 Create the file if it doesn't exist. Do not respond with prose only.
 
 ```kotlin
-import ai.koog.agents.core.dsl.extension.HistoryCompressionStrategy
-
 // inside the boundary node body (between exploration and drafting, for example)
 llm.writeSession {
-    replaceHistoryWithTLDR(strategy = HistoryCompressionStrategy.WholeHistory)
+    replaceHistoryWithTLDR()   // WholeHistory is the default; pass strategy = HistoryCompressionStrategy.X only when overriding
 }
 ```
 
-Other strategy variants (use only when the user names them):
+Other strategy variants (use only when the user names them — pass via `replaceHistoryWithTLDR(strategy = HistoryCompressionStrategy.X)` and add `import ai.koog.agents.core.dsl.extension.HistoryCompressionStrategy`):
 
 - `HistoryCompressionStrategy.NoCompression` — keep everything
 - `HistoryCompressionStrategy.WholeHistoryMultipleSystemMessages` — multi-message summary
