@@ -45,11 +45,10 @@ If the user's description matches "I know the topology, the LLM just picks tools
 
 **Only if you did NOT redirect above** (the planner genuinely fits), pick the variant from the user's description without blocking on a clarifying question:
 
-- LLM-based (default) — pick when ordering depends on runtime findings and state is unstructured prose
+- LLM-based (default) — pick when ordering depends on runtime findings and state is unstructured prose. Step 2 also shows the optional critic-loop sub-variant for output-quality grading
 - GOAP — pick only when the user names "GOAP", "classical planner", "state space search", or supplies a typed `data class` state and precondition/effect pairs
-- `Planners.llmBasedWithCritic` — pick when the user names "critic", "verify", or asks for output-quality grading
 
-Proceed to Step 2 for LLM-based / critic, Step 3 for GOAP. This handoff applies only when the planner fits; the redirect branch above already finished.
+Proceed to Step 2 for LLM-based, Step 3 for GOAP. This handoff applies only when the planner fits; the redirect branch above already finished.
 
 ## Step 2 — LLM-Based Planner
 
