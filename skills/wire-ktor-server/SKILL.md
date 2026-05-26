@@ -51,6 +51,8 @@ Proceed immediately to Step 3.
 
 Skip this step entirely if the user did not name MCP servers (no `mcp { ... }` block needed in the install). Proceed to Step 4 either way.
 
+The MCP example below uses `HttpClient(CIO)`. Add `implementation("io.ktor:ktor-client-cio:<ktor-version>")` to `build.gradle.kts` if the project does not already pull a Ktor client engine (server-only projects don't).
+
 The Ktor plugin exposes a typed `mcp { ... }` block that registers MCP servers as part of the plugin configuration — no separate `McpToolRegistryProvider` plumbing in user code:
 
 ```kotlin
