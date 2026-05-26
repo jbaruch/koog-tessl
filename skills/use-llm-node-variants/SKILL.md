@@ -4,7 +4,7 @@ description: >
   Use a non-default LLM node variant inside a Koog 1.0 strategy — streaming output,
   multiple-choice sampling, content moderation, or forcing a specific tool call. Use
   when the user asks for "streaming", "multiple completions / sampling", "moderation",
-  "force one tool", "force the LLM to call <tool>", or names any of
+  "force one tool", "force the LLM to call a specific tool", or names any of
   `nodeLLMRequestStreaming`, `nodeLLMRequestMultipleChoices`, `nodeLLMModerateText`,
   `nodeLLMRequestForceOneTool`.
 ---

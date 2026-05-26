@@ -2,10 +2,10 @@
 name: add-tool
 description: >
   Add a new tool to an existing Koog 1.0 agent. Pick the right registration style
-  (@Tool + ToolSet annotation, Tool<TArgs,TResult> subclass, or sub-agent-as-tool),
+  (@Tool + ToolSet annotation, Tool[TArgs,TResult] subclass, or sub-agent-as-tool),
   define the args, and wire the tool into the agent's ToolRegistry. Use when the user
-  asks to "add a tool to my agent", "expose <X> to the LLM", "let the agent call
-  <function>", or "wrap this agent as a tool for another agent". Assumes a scaffolded
+  asks to "add a tool to my agent", "expose something to the LLM", "let the agent call
+  a function", or "wrap this agent as a tool for another agent". Assumes a scaffolded
   Koog 1.0 project — for new projects start with the scaffold-agent skill.
 ---
 

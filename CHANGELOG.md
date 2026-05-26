@@ -2,7 +2,13 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
-## [0.4.2] — 2026-05-26
+## [0.4.3] — 2026-05-26
+
+### Fixed
+
+- Stripped XML-tag-looking syntax from skill `description:` fields in `add-tool` (`Tool<TArgs,TResult>` → `Tool[TArgs,TResult]`; `<X>` / `<function>` → prose), `domain-model-subtask-pipeline` (`subgraphWithTask<In, Out>` → `subgraphWithTask[In, Out]`; same for `subgraphWithVerification<T>` and `CriticResult<T>`), `use-llm-node-variants` (`<tool>` → prose). The `tessl skill review` validator rejects `<` followed by alpha as an XML tag — the just-landed skill-review CI gate (0.4.1) failed `add-tool` on the previous 0.4.2 publish attempt because of this. **The 0.4.2 publish never landed in the registry** (failed at the gate); 0.4.3 ships the same content as 0.4.2 plus this descriptor fix
+
+## [0.4.2] — 2026-05-26 (never published)
 
 ### Fixed
 

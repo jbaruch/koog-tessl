@@ -4,9 +4,9 @@ description: >
   Author a Koog 1.0 agent as a typed pipeline of domain-modeled subtasks — tools
   sliced by access pattern (read / write / communication) into separate ToolSets,
   inter-subtask handoffs as `@Serializable` `@LLMDescription`-annotated data
-  classes (not text prompts), each subtask wired with `subgraphWithTask<In, Out>`
+  classes (not text prompts), each subtask wired with `subgraphWithTask[In, Out]`
   using its own model and tool subset, self-correction loops via
-  `subgraphWithVerification<T>` + `CriticResult<T>`. The integration pattern
+  `subgraphWithVerification[T]` + `CriticResult[T]`. The integration pattern
   Koog's own banking demo uses. Use when the user asks to "model the agent as a
   pipeline", "build a multi-stage agent with typed handoffs", "give each stage
   its own tools", "build a verify-and-fix loop with typed data", or describes a
