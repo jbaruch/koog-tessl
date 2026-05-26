@@ -24,7 +24,7 @@ Proceed immediately to Step 2.
 
 ## Step 2 — Pick a Backend
 
-Use whichever backend the user named (Langfuse, Weave, Datadog, or raw OTLP). If the user did not name one, default to OTLP — transport-agnostic, works with any compliant collector, can be swapped to a vendor later. Do not block on a clarifying question; pick and proceed.
+Use whichever backend the user named. If the user did not name one, default to OTLP. Do not block on a clarifying question.
 
 - Langfuse — hosted LLM-observability product; needs project URL + keys via env vars
 - Weave — Weights & Biases LLM observability

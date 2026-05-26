@@ -6,14 +6,14 @@ All notable changes to this tile are documented here. Format: [Keep a Changelog]
 
 ### Changed
 
-- Hardened skills against the **file-write** failure mode observed in 0.3.1 eval run `019e60f5` and confirmed in the partial re-run `019e613e`: the scorer reads files from the solution directory, but several skills told the agent "produce ... as part of your response" — which the agent satisfied with stdout prose that the scorer can't see. Adopted the `Path: <file>` convention from `scaffold-agent` across the patched skills so the file targets are explicit and unambiguous:
-  - `add-observability` Step 3 — `Path: Main.kt` for the modified agent construction, `Path: build.gradle.kts` for the dependency
-  - `manage-state` Step 2 — `Path: Strategy.kt` for the boundary-node body
-  - `persist-chat-history` Step 4 — `Path: Main.kt` + `Path: build.gradle.kts` + a concrete `Path: <route-file>` when the user named a handler
-  - `add-tool` Step 2 — `Path: <ToolName>.kt` (concrete tool-name example, not a literal placeholder) + `Path: Main.kt` + `Path: build.gradle.kts`
-  - `author-strategy` Step 8 — `Path: Strategy.kt` for the DSL + `Path: Main.kt` for the modified construction
-  - `handle-agent-events` Step 2 — same `Path:` convention applied
-  - `wire-ktor-server` Step 5 — `Path: Application.kt` for the modified module + `Path: build.gradle.kts`
+- Hardened skills against the **file-write** failure mode observed in 0.3.1 eval run `019e60f5` and confirmed in the partial re-run `019e613e`: the scorer reads files from the solution directory, but several skills told the agent "produce ... as part of your response" — which the agent satisfied with stdout prose that the scorer can't see. Adopted the `Path:` convention from `scaffold-agent` across the patched skills so the file targets are explicit and unambiguous (full `src/main/kotlin/com/example/<file>` paths plus `build.gradle.kts` at repo root):
+  - `add-observability` Step 3 — `Path: src/main/kotlin/com/example/Main.kt` for the modified agent construction, `Path: build.gradle.kts` for the dependency
+  - `manage-state` Step 2 — `Path: src/main/kotlin/com/example/Strategy.kt` for the boundary-node body
+  - `persist-chat-history` Step 4 — `Path: src/main/kotlin/com/example/Main.kt` + `Path: build.gradle.kts` + a concrete handler path (e.g., `src/main/kotlin/com/example/Routes.kt`) when the user named a handler
+  - `add-tool` Step 2 — `Path: src/main/kotlin/com/example/AccountLookupTool.kt` (concrete tool-name example, rename to match the actual tool) + `Path: src/main/kotlin/com/example/Main.kt` + `Path: build.gradle.kts`
+  - `author-strategy` Step 8 — `Path: src/main/kotlin/com/example/Strategy.kt` for the DSL + `Path: src/main/kotlin/com/example/Main.kt` for the modified construction
+  - `handle-agent-events` Step 2 — `Path: src/main/kotlin/com/example/Main.kt` + `Path: build.gradle.kts`
+  - `wire-ktor-server` Step 5 — `Path: src/main/kotlin/com/example/Application.kt` + `Path: build.gradle.kts`
 
 - `add-tool` Step 1 routing — annotated-tool default now defers to Step 2 (typed `Tool<TArgs,TResult>`) when the user's existing function takes a `data class` parameter or returns a typed result; the previous "default to Step 1" rule wrapped typed signatures in flat-primitive annotated tools and lost the type contract
 

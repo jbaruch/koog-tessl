@@ -21,9 +21,9 @@ Available actions:
 
 If the user is ambiguous, default to Step 1 (annotated). Escalate to Step 2 (typed `Tool<TArgs,TResult>`) when **any** of these is true:
 
-- The user supplies an existing function whose parameter is a `data class` (not flat primitives) — the annotated path can't preserve that shape, it flattens to primitive args
-- The user's existing function returns a `data class` or other typed result the LLM consumers also use programmatically
-- The user names "typed args", "typed result", "Tool subclass", "ToolDescriptor", or explicitly says they don't want a String return
+- The user supplies an existing function whose parameter is a `data class`, not flat primitives
+- The user's existing function returns a `data class` or other typed result
+- The user names "typed args", "typed result", "Tool subclass", "ToolDescriptor", or "no String return"
 
 Escalate to Step 3 only when the new "tool" is itself agent-shaped.
 

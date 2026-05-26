@@ -24,7 +24,7 @@ Proceed immediately to Step 2.
 
 ## Step 2 — Install the Plugin
 
-In the `Application` module, install the `Koog` plugin. The minimal install — required for any Koog-on-Ktor deployment — is just the prompt-executor wiring:
+In the `Application` module, install the `Koog` plugin. The minimal install is just the prompt-executor wiring:
 
 ```kotlin
 import ai.koog.ktor.Koog

@@ -35,7 +35,7 @@ The graph DSL (`strategy { ... }`) is the right default. A planner is the right 
 - The action space is large enough that hardcoding edges would be a maintenance burden
 - You're willing to trade extra LLM round-trips for autonomy
 
-If the user's description matches "I know the topology, the LLM just picks tools within nodes", redirect — they don't need a planner, they need a graph:
+If the user's description matches "I know the topology, the LLM just picks tools within nodes", redirect:
 
 - Invoke `Skill(skill: "author-strategy")` and run it end-to-end through its Step 8
 - Write the graph DSL code to disk per `author-strategy`'s Step 8
