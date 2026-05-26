@@ -55,7 +55,7 @@ Write the modified agent construction, the dependency, and any handler updates t
 
 - `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction (or the file containing the `AIAgent(...)` call)
 - `Path: build.gradle.kts` — appended dependency line
-- If the user named a route/handler file (e.g., `Routes.kt`, `ChatController.kt`), write the updated handler under a concrete `Path: src/main/kotlin/com/example/<that-filename>` — do not write a literal `<route-or-handler-file>` placeholder
+- If the user named a route/handler file (e.g., `Routes.kt`, `ChatController.kt`), write the updated handler under a concrete path using that filename — for example `Path: src/main/kotlin/com/example/Routes.kt`. Never emit a literal angle-bracket placeholder filename
 
 Create files if they don't exist. Do not respond with prose only.
 

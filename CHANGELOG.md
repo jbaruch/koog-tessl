@@ -6,22 +6,24 @@ All notable changes to this tile are documented here. Format: [Keep a Changelog]
 
 ### Changed
 
-- Hardened skills against the **file-write** failure mode observed in 0.3.1 eval run `019e60f5` and confirmed in the partial re-run `019e613e`: the scorer reads files from the solution directory, but several skills told the agent "produce ... as part of your response" — which the agent satisfied with stdout prose that the scorer can't see. Added explicit "write to file path X / create if missing / do not respond with prose only" directives to the action steps in:
-  - `add-observability` Step 3 — write modified construction to `Main.kt`, dependency to `build.gradle.kts`
-  - `manage-state` Step 2 — write boundary-node body to the strategy file
-  - `persist-chat-history` Step 4 — write construction + handler + dependency to project tree
-  - `add-tool` Step 2 — write tool class + agent construction to source tree
-  - `author-strategy` Step 8 — write strategy + agent construction to source tree
+- Hardened skills against the **file-write** failure mode observed in 0.3.1 eval run `019e60f5` and confirmed in the partial re-run `019e613e`: the scorer reads files from the solution directory, but several skills told the agent "produce ... as part of your response" — which the agent satisfied with stdout prose that the scorer can't see. Adopted the `Path: <file>` convention from `scaffold-agent` across the patched skills so the file targets are explicit and unambiguous:
+  - `add-observability` Step 3 — `Path: Main.kt` for the modified agent construction, `Path: build.gradle.kts` for the dependency
+  - `manage-state` Step 2 — `Path: Strategy.kt` for the boundary-node body
+  - `persist-chat-history` Step 4 — `Path: Main.kt` + `Path: build.gradle.kts` + a concrete `Path: <route-file>` when the user named a handler
+  - `add-tool` Step 2 — `Path: <ToolName>.kt` (concrete tool-name example, not a literal placeholder) + `Path: Main.kt` + `Path: build.gradle.kts`
+  - `author-strategy` Step 8 — `Path: Strategy.kt` for the DSL + `Path: Main.kt` for the modified construction
+  - `handle-agent-events` Step 2 — same `Path:` convention applied
+  - `wire-ktor-server` Step 5 — `Path: Application.kt` for the modified module + `Path: build.gradle.kts`
 
 - `add-tool` Step 1 routing — annotated-tool default now defers to Step 2 (typed `Tool<TArgs,TResult>`) when the user's existing function takes a `data class` parameter or returns a typed result; the previous "default to Step 1" rule wrapped typed signatures in flat-primitive annotated tools and lost the type contract
 
-- `handle-agent-events` Step 2 — added the same file-write directive as the other patched skills; round-2 eval `019e6149` showed this skill is non-deterministic when only "produce as part of response" is documented (round 1: 100, round 2: 0)
+- `handle-agent-events` Step 2 — adopted the same `Path:` directive; round-2 eval `019e6149` showed the prior prose-only handoff was non-deterministic (round 1: 100, round 2: 0)
 
-- `use-planner` Step 1 redirect to `author-strategy` — made the redirect actionable: it now runs `author-strategy` end-to-end and writes the graph DSL code per author-strategy's Step 8 plus the topology and round-trip-cost reasoning as comments at the top of the produced file; the previous wording let the agent stop at a prose explanation
+- `use-planner` Step 1 redirect to `author-strategy` — made the redirect actionable: it now runs `author-strategy` end-to-end and writes the graph DSL code via `Path:` per author-strategy's Step 8, plus topology and round-trip-cost reasoning as comments at the top of the produced file; the previous wording let the agent stop at a prose explanation. Step 1 also adds a "Finish here — do not continue into planner-variant selection or Step 2 / Step 3" line so the redirect and planner-fits branches are mutually exclusive, and an explicit "Chaining exception (exhaustive — overrides 'Do not run other steps' only as listed)" preamble names the Step 1 → Step 2/3 chain per `skill-authoring`
 
 - Hardened skills against the "no-output" failure mode observed in 0.3.1 eval run `019e60f5`:
-  - `add-observability` Step 2 — replaced blocking "Ask the user which backend" with a non-blocking pick + OTLP default, plus an explicit "produce the modified construction and Gradle block in your response" handoff; fixes the −100pp lift on `add-observability-langfuse`
-  - `wire-ktor-server` Step 2 — split into minimal install (mandatory) vs MCP/HOCON add-ons (skipped unless named); skill ends with an explicit "produce the modified module + Gradle change as labeled code blocks" directive; fixes the −28pp lift on `wire-ktor-server-route`
+  - `add-observability` Step 2 — replaced blocking "Ask the user which backend" with a non-blocking pick + OTLP default; Step 3 writes via `Path:`; fixes the −100pp lift on `add-observability-langfuse`
+  - `wire-ktor-server` Step 2 — split into minimal install (mandatory) vs MCP/HOCON add-ons; Steps 3 and 4 each open with "Skip this step entirely if..."; Step 5 writes via `Path:`; fixes the −28pp lift on `wire-ktor-server-route`
   - `manage-state` Step 2 — committed to `HistoryCompressionStrategy.WholeHistory` as the default and moved the other six variants into "use only when the user names them"; fixes the −80pp lift on `manage-state-tldr-mid-phase`
   - `use-planner` Step 1 — converted the "ask user LLM-based vs GOAP" stall into a pick-by-keywords rule (GOAP only when the user names typed state / classical planner / state space); planner-redirect tasks no longer block on a clarifying question
 - Tightened skill activation routing for planner construction:
