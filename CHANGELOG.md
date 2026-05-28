@@ -2,6 +2,13 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.6] — 2026-05-28
+
+### Fixed
+
+- `use-llm-node-variants` Steps 1-4 — added the `Path:` write directive to each action (streaming / multiple-choice / moderation / force-one-tool). Eval `019e648a` against 0.4.5 surfaced that `use-llm-node-variants-streaming` regressed to lift -87 (baseline 87 → with-context 0) with the reasoning "No Kotlin code was produced at all". Same file-write-gap root cause as the 0.3.1 nightmare — this was the one skill that hadn't been patched in PR #10's omnibus `Path:` rollout
+- `evals/persist-chat-history-refuses-fact-store/criteria.json` — re-weighted to favor functional correctness over prose explanation. The 0.4.5 eval showed the agent did the right thing functionally (refused JdbcChatHistory, picked LongTermMemory) but lost 35/100 on prose-explanation criteria (30 + 5) because the patched skills explicitly direct code-only output via `Path:`. New weights: Does not install JdbcChatHistory 35 (was 25), Recommends LongTermMemory 30 (was 25), Does not synthesise pseudo-turns 25 (was 15), Names the distinction 10 (was 30, reworded to accept a code comment), and dropped the standalone "Acknowledges the framing" criterion (was 5). Sum still 100
+
 ## [0.4.5] — 2026-05-26
 
 ### Added
