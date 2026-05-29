@@ -13,7 +13,7 @@ data class IssueClassification(
 )
 ```
 
-The agent currently uses `singleRunStrategy()` (the default) — they're not authoring a custom strategy graph. They want the simplest possible change.
+The agent currently uses the default strategy. They want the smallest change that gets them the typed result.
 
 ## Output Specification
 

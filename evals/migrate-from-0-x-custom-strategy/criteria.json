@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the migration catches the non-obvious 1.0 breaking changes that hit a custom-strategy agent with a hand-built client — the nodeExecuteTools auto-writeback removal in the graph DSL, the LLMClient HTTP-transport decoupling, and the KoogClock swap — not just the surface-level coordinate and JDK bumps. A baseline with no Koog 1.0 knowledge keeps the 0.x topology and constructor shapes, which silently break or fail to compile.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Routes tool results through an explicit send-results node",
+      "max_score": 25,
+      "description": "Recognizes that nodeExecuteTools no longer auto-writes results back to the prompt in 1.0: inserts a nodeLLMSendToolResults node and routes runTools through it before looping/finishing. Failure: keeps the 0.x topology (runTools forwardTo callModel with no send-tool-results node), so tool outputs never reach the LLM and the agent silently forgets what it ran"
+    },
+    {
+      "name": "Adapts the LLM client to the decoupled HTTP transport",
+      "max_score": 25,
+      "description": "Recognizes the LLMClient constructor no longer accepts a Ktor HttpClient in 1.0: passes a KoogHttpClient.Factory (e.g. from ai.koog:http-client-ktor) so the tuned/proxied client is preserved, and declares ai.koog:http-client-ktor explicitly since the transitive Ktor route was closed. Failure: keeps httpClient = HttpClient(CIO) passed into OpenAILLMClient, which no longer compiles"
+    },
+    {
+      "name": "Swaps kotlin.time.Clock for KoogClock",
+      "max_score": 15,
+      "description": "Replaces the kotlin.time.Clock parameter with KoogClock (KoogClock.System for production, an injected KoogClock for tests). Failure: leaves clock = Clock.System referencing kotlin.time.Clock, which is no longer the accepted parameter type"
+    },
+    {
+      "name": "Raises the JDK and Kotlin toolchain minima",
+      "max_score": 15,
+      "description": "Bumps the JVM toolchain to 17 and the Kotlin Gradle plugin to 2.3.10 or later — 1.0 requires JDK 17 and is compiled with Kotlin 2.3.x. Failure: leaves jvmToolchain(11) or Kotlin 2.0.x, which fails the toolchain/metadata check before the API errors even surface"
+    },
+    {
+      "name": "Drops .invoke from the AIAgent construction",
+      "max_score": 10,
+      "description": "Changes AIAgent.invoke(...) to the top-level AIAgent(...) factory — the companion invoke was removed in 1.0. Failure: leaves AIAgent.invoke or substitutes a concrete subtype constructor like GraphAIAgent(...)"
+    },
+    {
+      "name": "Bumps all Koog coordinates to 1.0 with no mixed versions",
+      "max_score": 10,
+      "description": "Updates ai.koog:koog-agents (and any other ai.koog artifact) to 1.0.0 or later, leaving nothing at 0.7.x. Failure: leaves a 0.x artifact in place, producing an unsupported mixed 0.x/1.0 graph"
+    }
+  ]
+}
