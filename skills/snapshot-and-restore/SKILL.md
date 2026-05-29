@@ -22,7 +22,7 @@ Use snapshot when:
 - You want to fork — take a snapshot, try variant A, restore, try variant B
 - You're building a debugger or replay tool that needs explicit save/load semantics
 
-If the user's need is "agent should resume after a crash", invoke `Skill(skill: "add-persistence")`. If it's "save state at this specific point", continue.
+If the user's need is "agent should resume after a crash", snapshot is the wrong feature — it is caller-triggered, not automatic. Invoke `Skill(skill: "add-persistence")`, produce its `install(Persistence)` solution, and reply to the developer in one message that names the mismatch: snapshot is caller-triggered, the Persistence feature checkpoints automatically. Do not stop at the redirect — the redirect is not the deliverable. If the need is "save state at this specific point", continue.
 
 Proceed immediately to Step 2.
 
