@@ -121,7 +121,12 @@ Steps 1–5 covered the client side. If the user is consuming an existing MCP se
 
 Use when the user asks to "expose tools over MCP", "build an MCP server", or "publish a ToolSet as an MCP endpoint". Skip otherwise.
 
-**First read the framing:** Koog's `@Tool` / `@LLMDescription` / `ToolSet` annotations are **LOCAL** tool primitives — they bind a Kotlin function to a Koog agent's `ToolRegistry`, no MCP server or client involved. Koog ships an extension that lets you take an existing `ToolRegistry` and expose it as a stdio MCP server (the path this step covers), but that's a secondary use case for the annotation, not its primary purpose. For a project whose primary goal is publishing tools over MCP — independent of any Koog agent — use the Kotlin MCP SDK's own server annotation directly (the SDK is `io.modelcontextprotocol:kotlin-sdk`); the Koog-bridge path below is the right choice when you already have a Koog `ToolRegistry` in the same project and want it reachable over MCP too.
+**First read the framing:**
+
+- `@Tool` / `@LLMDescription` / `ToolSet` are LOCAL Koog tool primitives. They bind a Kotlin function to a Koog agent's `ToolRegistry`. No MCP server or client involved
+- `startStdioMcpServer` bridges an existing `ToolRegistry` over to MCP. That is the path this step covers
+- For projects whose primary goal is publishing tools over MCP without a Koog agent in the picture, use the Kotlin MCP SDK's own server annotation directly. The SDK is `io.modelcontextprotocol:kotlin-sdk`
+- The Koog-bridge path below is the right choice when you already have a Koog `ToolRegistry` and want it reachable over MCP too
 
 Add the server module:
 
