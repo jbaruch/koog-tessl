@@ -90,6 +90,18 @@ steps:
       mkdir -p /tmp/gh-aw/coding-policy
       cd /tmp/gh-aw/coding-policy
       tessl install jbaruch/coding-policy --yes
+      # tessl 0.81+ installs plugins under .tessl/plugins/; older versions used
+      # .tessl/tiles/. Bridge whichever layout exists to the legacy .tessl/tiles/
+      # path the reviewer prompt reads, so the reviewer stays tessl-version-agnostic.
+      rules_dir=$(find /tmp/gh-aw/coding-policy/.tessl -type d -path '*/jbaruch/coding-policy/rules' -print -quit 2>/dev/null || true)
+      if [ -n "$rules_dir" ]; then
+        parent=$(dirname "$rules_dir")
+        legacy=/tmp/gh-aw/coding-policy/.tessl/tiles/jbaruch/coding-policy
+        if [ "$parent" != "$legacy" ]; then
+          mkdir -p /tmp/gh-aw/coding-policy/.tessl/tiles/jbaruch
+          ln -sfn "$parent" "$legacy"
+        fi
+      fi
 
 tools:
   bash:
