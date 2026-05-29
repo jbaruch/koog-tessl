@@ -2,6 +2,21 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.8] — 2026-05-29
+
+### Fixed
+
+- `snapshot-and-restore` Step 1 + `add-persistence` Step 2 — completed the crash-recovery redirect handoff. The snapshot Step 1 redirect previously said only "invoke add-persistence", so with the skill loaded the agent emitted a meta-description of the skill chain instead of the concrete `install(Persistence)` solution and a developer-facing message — eval `snapshot-and-restore-refuses-crash` regressed to with-context 42 vs baseline 66. The redirect now directs the agent to deliver the full Persistence solution plus a one-message snapshot-vs-Persistence mismatch explanation, and `add-persistence` Step 2 gained checkpoint-frequency cost guidance (every-step writes are expensive on long runs). With-context returned to 100
+
+### Added
+
+- `evals/migrate-from-0-x-custom-strategy` — second migration scenario covering the non-obvious 1.0 breaking changes a custom-strategy agent hits: the `nodeExecuteTools` auto-writeback removal (chain `nodeLLMSendToolResults` explicitly), the `LLMClient` HTTP-transport decoupling (`KoogHttpClient.Factory` instead of a Ktor `HttpClient`), and the `kotlin.time.Clock` → `KoogClock` swap, alongside the coordinate/JDK bumps
+- `evals/wire-acp-server-choose-vs-a2a` — protocol-selection scenario: a tooling dashboard needing run-lifecycle control with cancellation and progress streaming should pick ACP (`agents-features-acp`), not A2A (agent-to-agent RPC) or MCP (tool host). Highest-lift new scenario (+95 baseline→with-context)
+
+### Changed
+
+- `evals/add-structured-output-classify-issue` — removed the answer-narrating clause from the task so the "does not introduce a custom strategy" criterion tests application rather than reading
+
 ## [0.4.7] — 2026-05-29
 
 ### Changed

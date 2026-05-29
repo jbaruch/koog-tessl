@@ -75,6 +75,8 @@ val agent = AIAgent(
 }
 ```
 
+Tune checkpoint frequency to the run. Checkpoint every N steps or at phase boundaries. Reserve every-step writes for runs where redoing a single step justifies the overhead.
+
 For planner agents specifically: 1.0 added checkpoint support for planner state (KG-673). `AIAgentStorage` is serialized into checkpoints automatically, so any `createStorageKey<T>` value with a `@Serializable` type rides along — non-serializable types break checkpointing silently (invoke `Skill(skill: "manage-state")` for the serialization constraints).
 
 The corresponding pipeline interfaces also split in 1.0: `AIAgentPipeline` → `AIAgentPipelineAPI` + `AIAgentGraphPipeline` / `AIAgentPlannerPipeline`. Code that referenced the old interface needs updating.
