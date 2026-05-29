@@ -2,6 +2,16 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.7] — 2026-05-29
+
+### Changed
+
+Knowledge corrections from Vadim Briliantov (Koog project lead) — three skill clarifications:
+
+- `wire-mcp-server` Step 6 — added a framing paragraph stating that `@Tool` / `@LLMDescription` / `ToolSet` are **LOCAL** Koog tool annotations. The `startStdioMcpServer` path bridges a Koog `ToolRegistry` to MCP, but that's a secondary use case for the annotation, not its primary purpose. For projects whose primary goal is publishing tools over MCP (independent of any Koog agent), the Kotlin MCP SDK (`io.modelcontextprotocol:kotlin-sdk`) has its own server annotation. The Koog-bridge path is right when you already have a Koog `ToolRegistry` and want it reachable over MCP too
+- `add-tool` Step 3 (Sub-Agent-as-Tool) — added the sub-agent vs subgraph distinction. Sub-agents (`AIAgentService.fromAgent`) are fully independent agents that communicate only through typed input/output; subgraphs (`subgraphWithTask` / `subgraphWithVerification`) are part of the same agent and share one message history. Default for "break my agent into stages" is subgraph; reach for sub-agent only when isolation is the explicit requirement
+- `domain-model-subtask-pipeline` Step 6 — strengthened the auto-shared-history framing to name the contrast with independent-agent abstractions (Koog sub-agents, LangChain4j Agentic sub-agents). Subgraphs live on one common history; independent agents communicate only through typed input/output. Cross-references `Skill(skill: "add-tool")` Step 3 for the isolation case
+
 ## [0.4.6] — 2026-05-28
 
 ### Fixed

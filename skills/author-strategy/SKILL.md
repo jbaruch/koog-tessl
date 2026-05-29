@@ -3,10 +3,13 @@ name: author-strategy
 description: >
   Author a custom graph strategy for a Koog 1.0 agent — pick the right node types,
   chain tool execution correctly, build edges with the infix vocabulary, and reach for
-  subgraphs (`subgraphWithTask`, `subgraphWithVerification`) when steps deserve isolation.
+  subgraphs (`subgraphWithTask`, `subgraphWithVerification`) when steps deserve their
+  own model, prompt, or tool subset while still sharing the agent's message history.
   Use when the user asks to "write a custom strategy", "build a graph for the agent",
   "author a strategy DSL", "add a verify-and-fix loop", "use subgraphs", or describes
-  multi-step orchestration that won't fit inside `singleRunStrategy()`.
+  multi-step orchestration that won't fit inside `singleRunStrategy()`. Subgraphs are
+  not for context isolation — for an independent agent that does not see the parent's
+  history, use `Skill(skill: "add-tool")` Step 3 (sub-agent-as-tool).
 ---
 
 # Author Strategy Skill

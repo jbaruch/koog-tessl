@@ -121,6 +121,13 @@ Finish here.
 
 Use when the new "tool" is itself agent-shaped: its own tools, model, strategy. Reference: `examples/code-agent/step-04-add-subagent/`.
 
+**Sub-agent vs subgraph — pick the right primitive:**
+
+- **Sub-agent** (this step, `AIAgentService.fromAgent`) — fully independent agent. Has its own context window; parent and child communicate only through the typed input/output of the tool call. Pick when the child should NOT see the parent's conversation history (isolation, separate scope, different system prompt that mustn't leak)
+- **Subgraph** (`subgraphWithTask` / `subgraphWithVerification`, covered by `Skill(skill: "author-strategy")` and `Skill(skill: "domain-model-subtask-pipeline")`) — part of the SAME agent. All subgraphs share one message history, so each subgraph's LLM call sees what every prior subgraph saw and did. Pick when phases need shared context (typed-handoff pipelines, verify-and-fix loops, multi-stage classification)
+
+The default for "I want to break my agent into stages" is **subgraph**, not sub-agent. Reach for sub-agent only when isolation is the explicit requirement.
+
 Construct the child agent first (full `AIAgent(...)` factory call). Then wrap and register:
 
 ```kotlin
