@@ -1,31 +1,26 @@
 {
-  "context": "Negative case — tests whether the agent recognizes that the developer's data (structured, queryable, per-decision facts) belongs in a fact-storage primitive (LongTermMemory) or as a tool, NOT in chat-history. Installing JdbcChatHistory / ChatHistoryAws / ChatMemorySql here would force the agent to inject fake Message.User / Message.Assistant pseudo-turns to surface the facts, which the model misinterprets as today's conversation — the failure mode the anti-pattern in persist-chat-history Step 6 names.",
+  "context": "Negative case — tests whether the agent recognizes that the developer's data (structured, queryable, per-decision facts) belongs in a fact-storage primitive (LongTermMemory) or as a tool, NOT in chat-history. Installing JdbcChatHistory / ChatHistoryAws / ChatMemorySql here would force the agent to inject fake Message.User / Message.Assistant pseudo-turns to surface the facts, which the model misinterprets as today's conversation — the failure mode the anti-pattern in persist-chat-history Step 6 names. Weights favor functional correctness over prose explanation; a code-only refusal that picks the right primitive is the target behavior given the tile's Path: write convention.",
   "type": "weighted_checklist",
   "checklist": [
     {
-      "name": "Names the chat-history-vs-fact-store distinction",
-      "max_score": 30,
-      "description": "Surfaces that chat-history persistence is for real conversation turns and that the developer's data (per-decision records the agent should retrieve programmatically) is a different shape. Without this distinction the developer cannot choose the right primitive"
+      "name": "Does not install JdbcChatHistory / chat-history-jdbc",
+      "max_score": 35,
+      "description": "Does NOT call install(JdbcChatHistory) and does NOT add ai.koog:agents-features-chat-history-jdbc / -aws / -sql. The skill body explicitly names this as the wrong primitive; an installation here would be the anti-pattern this scenario tests refusal of. Code-only refusal is sufficient — no prose needed"
     },
     {
       "name": "Recommends LongTermMemory or a Tool",
-      "max_score": 25,
-      "description": "Routes the developer to ai.koog:agents-features-longterm-memory (with a SearchQueryProvider for organizer/date lookup) OR to building a @Tool like getRecentlyUsedFlavors(organizer) that the agent calls. Either is correct — both are fact-shaped primitives. May also mention systemPrompt for very small fixed contexts"
-    },
-    {
-      "name": "Does not install JdbcChatHistory / chat-history-jdbc",
-      "max_score": 25,
-      "description": "Does NOT call install(JdbcChatHistory) and does NOT add ai.koog:agents-features-chat-history-jdbc / -aws / -sql. The skill body explicitly names this as the wrong primitive; an installation here would be the anti-pattern this scenario tests refusal of"
+      "max_score": 30,
+      "description": "Routes the developer to ai.koog:agents-features-longterm-memory (with a SearchQueryProvider for organizer/date lookup) OR builds a @Tool like getRecentlyUsedFlavors(organizer) that the agent calls. Either is correct — both are fact-shaped primitives. Code or prose form both count"
     },
     {
       "name": "Does not synthesise pseudo-turns into a custom ChatHistoryProvider",
-      "max_score": 15,
+      "max_score": 25,
       "description": "Does NOT implement a custom ChatHistoryProvider that returns a hand-rolled list of Message.User / Message.Assistant entries representing facts the agent never actually said. This is the symptom-form of the same anti-pattern — the data isn't conversation-shaped and the model misreads the latest entry as today's task"
     },
     {
-      "name": "Acknowledges the framing without capitulating",
-      "max_score": 5,
-      "description": "Engages with the developer's phrasing (\"the agent needs to remember its past decisions\") and explains why fact-shaped data belongs in a queryable primitive. Does not refuse silently"
+      "name": "Names the chat-history-vs-fact-store distinction",
+      "max_score": 10,
+      "description": "Surfaces (in prose OR as a code comment OR via the picked dependency line) that chat-history persistence is for real conversation turns and that the developer's data is a different shape. A one-line code comment near the LongTermMemory install satisfies this — full prose walkthrough is not required given the tile's code-first Path: convention"
     }
   ]
 }

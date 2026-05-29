@@ -24,6 +24,13 @@ Available actions:
 
 Use when the caller needs to see partial output as it arrives (Ktor server endpoint, CLI with live print, conference demo with text appearing live).
 
+Write the strategy and the modified agent construction to disk with explicit `Path:` labels (same convention as `scaffold-agent`):
+
+- `Path: src/main/kotlin/com/example/Strategy.kt` — strategy with the streaming node
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction passing `strategy = ...`
+
+Create files if they don't exist. Do not respond with prose only.
+
 ```kotlin
 val strategy = strategy<String, String>("stream-reply") {
     val streamReply by nodeLLMRequestStreaming { chunk ->
@@ -45,6 +52,13 @@ Finish here.
 ## Step 2 — Multiple-Choice Sampling
 
 Use when you want multiple completions for the same prompt and downstream code (or a critic node) picks the best.
+
+Write the strategy and modified agent construction to disk via `Path:`:
+
+- `Path: src/main/kotlin/com/example/Strategy.kt` — strategy with the sampling + picker nodes
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction
+
+Create files if missing. Do not respond with prose only.
 
 ```kotlin
 val strategy = strategy<String, String>("sample-and-pick") {
@@ -73,6 +87,13 @@ Two variants:
 
 Both call a moderation classifier (provider-dependent) and produce a moderation result that downstream edges branch on.
 
+Write the strategy and modified agent construction to disk via `Path:`:
+
+- `Path: src/main/kotlin/com/example/Strategy.kt` — moderated strategy
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction
+
+Create files if missing. Do not respond with prose only.
+
 ```kotlin
 val strategy = strategy<String, String>("moderated-chat") {
     val moderate by nodeLLMModerateText()
@@ -92,6 +113,13 @@ Finish here.
 ## Step 4 — Force a Specific Tool Call
 
 Use when the next step must invoke a specific tool — no LLM choice, no fallback to text. Common case: a "router" agent where the first step always calls `classify_intent`.
+
+Write the strategy and modified agent construction to disk via `Path:`:
+
+- `Path: src/main/kotlin/com/example/Strategy.kt` — strategy with the forced-tool node
+- `Path: src/main/kotlin/com/example/Main.kt` — modified agent construction
+
+Create files if missing. Do not respond with prose only.
 
 ```kotlin
 val classifyTool = ClassifyIntentTool()
