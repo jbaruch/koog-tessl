@@ -10,7 +10,7 @@
     {
       "name": "Adds the ACP dependency",
       "max_score": 15,
-      "description": "Adds ai.koog:agents-features-acp at version 1.0.0 to build.gradle.kts (exact group and artifact). Failure: wrong artifact name, missing dependency, or an a2a-*/mcp module"
+      "description": "Adds ai.koog:agents-features-acp at 1.0.0 or later to build.gradle.kts (exact group and artifact). Failure: wrong artifact name, missing dependency, or an a2a-*/mcp module"
     },
     {
       "name": "Correct ACP import",
