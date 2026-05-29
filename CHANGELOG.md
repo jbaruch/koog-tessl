@@ -2,7 +2,7 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
-## [Unreleased]
+## [0.4.8] — 2026-05-29
 
 ### Fixed
 
