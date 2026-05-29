@@ -150,6 +150,17 @@ subtask uses a different model. You do NOT thread the history manually between
 subgraphs. Tool calls from `identifyProblem` are visible to `fixProblem`'s
 LLM; `fixProblem`'s actions are visible to `verifySolution`.
 
+This is what distinguishes a Koog **subgraph** from a Koog **sub-agent**
+(`AIAgentService.fromAgent`, covered by `Skill(skill: "add-tool")` Step 3) or
+from independent-agent abstractions in other frameworks (e.g., LangChain4j
+Agentic's sub-agents): independent agents communicate ONLY through the typed
+input/output of each call — they don't share history. Subgraphs live on one
+common history. The typed handoffs (Step 3) pass the structured artifact each
+phase produces; the shared history carries the surrounding context for free.
+
+If you actually want isolation (a phase that should NOT see prior context),
+use a sub-agent (`Skill(skill: "add-tool")` Step 3), not a subgraph.
+
 If the chain is long, history grows. Compress at deliberate boundaries (end of
 a phase, start of the next), not at every node:
 
