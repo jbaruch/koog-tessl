@@ -17,4 +17,4 @@ The agent currently uses the default strategy. They want the smallest change tha
 
 ## Output Specification
 
-Produce the full updated `Main.kt` (the agent construction with the typed output and imports) and the `build.gradle.kts` dependency changes. Write each file to disk, clearly labeled with its path.
+Update the project so `agent.run(...)` returns an `IssueClassification` directly instead of a free-form string the caller has to parse.
