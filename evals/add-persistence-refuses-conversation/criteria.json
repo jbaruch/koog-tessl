@@ -15,7 +15,7 @@
     {
       "name": "Does NOT install the generic Persistence feature",
       "max_score": 25,
-      "description": "Does NOT install Persistence or wire AgentCheckpointData / runFromCheckpoint to satisfy this need. Generic persistence checkpoints agent run state (node position, planner state, storage) for mid-run crash recovery — it does not satisfy \"resume the conversation tomorrow\""
+      "description": "Does NOT install Persistence or wire AgentCheckpointData / runFromCheckpoint to satisfy this need. Generic persistence checkpoints agent run state (node position, planner state, storage) for mid-run crash recovery — it does not satisfy \"resume the conversation tomorrow\". An empty or missing solution does NOT satisfy this criterion: a correct refusal still produces a response, so a non-answer scores 0 here rather than passing vacuously."
     },
     {
       "name": "Acknowledges the developer's word choice without capitulating",
@@ -25,7 +25,7 @@
     {
       "name": "Does NOT recommend LongTermMemory",
       "max_score": 10,
-      "description": "Does NOT install LongTermMemory for this need. LongTermMemory stores extracted facts about the user/session for retrieval — not the raw messages required to resume the conversation"
+      "description": "Does NOT install LongTermMemory for this need. LongTermMemory stores extracted facts about the user/session for retrieval — not the raw messages required to resume the conversation. An empty or missing solution does NOT satisfy this criterion: a correct refusal still produces a response, so a non-answer scores 0 here rather than passing vacuously."
     }
   ]
 }

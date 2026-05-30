@@ -17,4 +17,4 @@ The agent currently uses the default strategy. They want the smallest change tha
 
 ## Output Specification
 
-Walk through the change. Produce the modified agent construction code and any imports as a single response, labeled.
+Update the project so `agent.run(...)` returns an `IssueClassification` directly instead of a free-form string the caller has to parse.

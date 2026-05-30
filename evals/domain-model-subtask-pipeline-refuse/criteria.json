@@ -15,12 +15,12 @@
     {
       "name": "Does not produce subgraphWithTask code",
       "max_score": 20,
-      "description": "The output contains no subgraphWithTask, subgraphWithVerification, or strategy { ... } block. Building the pipeline pattern for a one-shot text transform is the failure mode this scenario tests"
+      "description": "The output contains no subgraphWithTask, subgraphWithVerification, or strategy { ... } block. Building the pipeline pattern for a one-shot text transform is the failure mode this scenario tests. An empty or missing solution does NOT satisfy this criterion: a correct refusal still produces a response, so a non-answer scores 0 here rather than passing vacuously."
     },
     {
       "name": "Does not introduce typed handoff data classes",
       "max_score": 15,
-      "description": "The output contains no @Serializable @LLMDescription'd intermediate data classes. Inventing a fake intermediate type just to have a 'typed handoff' for a one-step transform is over-engineering"
+      "description": "The output contains no @Serializable @LLMDescription'd intermediate data classes. Inventing a fake intermediate type just to have a 'typed handoff' for a one-step transform is over-engineering. An empty or missing solution does NOT satisfy this criterion: a correct refusal still produces a response, so a non-answer scores 0 here rather than passing vacuously."
     },
     {
       "name": "Engages with the developer's framing without capitulating",
