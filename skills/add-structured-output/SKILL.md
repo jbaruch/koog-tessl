@@ -51,6 +51,13 @@ val result: TriageResult = agent.run("Issue: app crashes on startup ...")
 
 The output type parameter on `AIAgent<Input, Output>` becomes the result of `agent.run(...)`. Use this path when the strategy is `singleRunStrategy()` (the default).
 
+Write the result to disk with explicit `Path:` labels (same convention as `scaffold-agent`). Do not respond with prose only.
+
+- `Path: src/main/kotlin/com/example/Main.kt` — the full agent construction with the `responseProcessor` parameter and the `@Serializable` output type
+- `Path: build.gradle.kts` — the `kotlinx-serialization` plugin and dependency when not already present
+
+Create the files if they do not exist.
+
 Finish here.
 
 ## Step 2 — `nodeLLMRequestStructured` Inside a Strategy
@@ -94,5 +101,13 @@ val agent: AIAgent<String, Classification> = AIAgent(
 ```
 
 The strategy's `Output` type parameter must match the structured node's type parameter and `AIAgent`'s `Output` parameter. Mismatches surface as compile errors.
+
+Write the strategy and the modified agent construction to disk with explicit `Path:` labels (same convention as `scaffold-agent`). Do not respond with prose only.
+
+- `Path: src/main/kotlin/com/example/Strategy.kt` — the strategy with the `nodeLLMRequestStructured` node and the `@Serializable` output type
+- `Path: src/main/kotlin/com/example/Main.kt` — the agent construction passing `strategy = ...`
+- `Path: build.gradle.kts` — the `kotlinx-serialization` plugin and dependency when not already present
+
+Create the files if they do not exist.
 
 Finish here.
