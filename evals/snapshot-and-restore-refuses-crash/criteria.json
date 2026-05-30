@@ -15,7 +15,7 @@
     {
       "name": "Does NOT recommend installing the snapshot feature",
       "max_score": 25,
-      "description": "Does NOT produce install(Snapshot) wiring or snapshot()/runFromSnapshot() call patterns to satisfy this need. The developer explicitly does not want to add save-state calls through the code — caller-triggered snapshots would force exactly that"
+      "description": "Does NOT produce install(Snapshot) wiring or snapshot()/runFromSnapshot() call patterns to satisfy this need. The developer explicitly does not want to add save-state calls through the code — caller-triggered snapshots would force exactly that. An empty or missing solution does NOT satisfy this criterion: a correct refusal still produces a response, so a non-answer scores 0 here rather than passing vacuously."
     },
     {
       "name": "Acknowledges the developer's word choice without capitulating",
