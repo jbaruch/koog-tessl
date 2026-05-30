@@ -7,7 +7,7 @@ All notable changes to this tile are documented here. Format: [Keep a Changelog]
 ### Fixed
 
 - `add-structured-output` Steps 1-2 — added the `Path:` file-write convention (the same fix `use-llm-node-variants` got in 0.4.6). Both actions now write `Main.kt` (plus `Strategy.kt` for Step 2) and `build.gradle.kts` to disk instead of emitting inline code the eval scorer can't see. The eval `add-structured-output-classify-issue` had scored 0/0 in every run — baseline and with-context — because the file-reading scorer saw an empty solution directory. This was the last skill missing the `Path:` convention from the 0.4.4 rollout
-- `evals/add-structured-output-classify-issue` — Output Specification now asks for the full labeled `Main.kt` + `build.gradle.kts` written to disk, matching the scorer's file-based grading
+- `evals/add-structured-output-classify-issue` — Output Specification reworded to a need-only description (update the project so `agent.run(...)` returns `IssueClassification` directly). The file-write convention lives in the skill's `Path:` directives, not the task, so the baseline does not get the technique (`plugin-evals` No Bleeding)
 - Refuse/redirect eval criteria — the "does NOT do X" criteria in seven scenarios (`domain-model-subtask-pipeline-refuse`, `cache-llm-calls-refuses-provider-side`, `persist-chat-history-refuses-fact-store`, `snapshot-and-restore-refuses-crash`, `use-planner-refuses-when-graph-fits`, `add-persistence-refuses-conversation`, `scaffold-agent-refuse-non-empty-dir`) now explicitly fail on an empty/missing solution. A stubbed (no-output) run previously passed them vacuously, scoring 35-60/100 on a non-answer and masquerading as negative lift in the suite
 
 ## [0.4.8] — 2026-05-29
