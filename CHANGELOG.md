@@ -2,6 +2,13 @@
 
 All notable changes to this tile are documented here. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [0.4.10] — 2026-05-31
+
+### Fixed
+
+- `use-planner` Steps 2-3 — added the `Path:` file-write convention so the `ai.koog:agents-planner` dependency and the agent construction land in graded `build.gradle.kts` / `Main.kt` files instead of inline prose. The 3-run eval showed `use-planner-llm-based-triage` reliably missing "adds the separate planner module dependency" (33%) because the dependency was never written to a file
+- `use-planner` Step 1 — the graph-DSL redirect now adds a top-of-file comment acknowledging the developer's "planning" wording. The `use-planner-refuses-when-graph-fits` scenario scored 16% on "acknowledges the developer's framing without capitulating" because the redirect named the topology and round-trips but never engaged the "planning" word
+
 ## [0.4.9] — 2026-05-30
 
 ### Fixed
