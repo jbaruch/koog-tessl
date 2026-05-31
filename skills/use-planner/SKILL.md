@@ -41,6 +41,7 @@ If the user's description matches "I know the topology, the LLM just picks tools
 - Write the graph DSL code to disk per `author-strategy`'s Step 8
 - Add a top-of-file comment in the produced strategy file naming the topology as the disqualifying signal for a planner
 - Add a second top-of-file comment naming the extra LLM round-trips a planner would have added
+- Add a third top-of-file comment acknowledging the developer's "planning" wording and stating that a fixed-topology workflow is graph-DSL territory, not a planner
 - Finish here — do not continue into planner-variant selection or Step 2 / Step 3
 
 **Only if you did NOT redirect above** (the planner genuinely fits), pick the variant from the user's description without blocking on a clarifying question:
@@ -81,6 +82,13 @@ val agent = AIAgent(
 The critic variant adds an inner verify loop where a second LLM call grades each planner step before it's accepted. Use when output quality matters more than throughput; expect roughly 2× the LLM cost.
 
 `Planners.llmBased(name)` is the new constructor — the old `AIAgentPlannerStrategy.builder()` is gone in 1.0 (#1997).
+
+Write to disk with explicit `Path:` labels (same convention as `scaffold-agent`). Do not respond with prose only.
+
+- `Path: build.gradle.kts` — the `ai.koog:agents-planner` dependency
+- `Path: src/main/kotlin/com/example/Main.kt` — the agent construction with the planner strategy and the raised `maxIterations`
+
+Create the files if they do not exist.
 
 Finish here.
 
@@ -140,5 +148,12 @@ val agent = AIAgent(
     maxIterations = 100,
 )
 ```
+
+Write to disk with explicit `Path:` labels (same convention as `scaffold-agent`). Do not respond with prose only.
+
+- `Path: build.gradle.kts` — the `ai.koog:agents-planner` dependency
+- `Path: src/main/kotlin/com/example/Main.kt` — the state class, the GOAP planner, and the agent construction
+
+Create the files if they do not exist.
 
 Finish here.
