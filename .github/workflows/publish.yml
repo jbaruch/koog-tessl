@@ -1,12 +1,15 @@
 name: Publish Tile
 
+# Thin caller for the canonical fleet publish pipeline
+# (jbaruch/coding-policy#206). publish-mode: as-is keeps koog's deliberate
+# no-auto-bump contract (`tessl plugin publish` of the manifest version;
+# a missing human bump surfaces as a red "version exists" run). Display name
+# and the tile-content path filter are preserved.
+
 on:
   push:
     branches: [main]
-    # Only fire when tile-content paths change. CI/hygiene-only PRs (workflows,
-    # pre-commit config, .env.example, agent-only config) don't change the
-    # published tile (they're in `.tesslignore`) and shouldn't trigger publish.
-    # The allow-list mirrors the tile's payload surface.
+    # Only fire when tile-content paths change (mirrors the tile payload).
     paths:
       - 'rules/**'
       - 'skills/**'
@@ -17,45 +20,15 @@ on:
       - '.tesslignore'
   workflow_dispatch:
 
+# as-is publish makes no commit/push and uses no OIDC — least privilege.
 permissions:
   contents: read
 
 jobs:
   publish:
-    name: Publish jbaruch/koog
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
-        with:
-          # fetch-depth: 0 required by the skill-review action below — it diffs
-          # the current push against `github.event.before` to detect changed
-          # skills, which needs the prior commit reachable in the local clone.
-          fetch-depth: 0
-      - name: Setup Tessl CLI
-        uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e  # v2
-        with:
-          token: ${{ secrets.TESSL_TOKEN }}
-      # Reviews only the skills whose files changed in this push, against the
-      # latest published jbaruch/coding-policy. `credit-outage: skip` skips the
-      # affected skill on a tessl out-of-credits (403) outage (flagged in the
-      # run summary + the action's unreviewed-skills output); every other
-      # review failure still hard-fails. De-vendored now that the native input
-      # exists (jbaruch/coding-policy#188 / #190).
-      - name: Skill review (changed only)
-        uses: jbaruch/coding-policy/.github/actions/skill-review@3e3f74e90f1ff6ae283fedc51a7191d1b628b543
-        with:
-          threshold: '85'
-          credit-outage: 'skip'
-      - name: Publish current tile.json version
-        # Explicitly NOT using `tesslio/patch-version-publish`. That action's
-        # design contract (auto-bump patch when local matches registry, then
-        # push a `Bump <tile> to <version> [skip ci]` commit back to main)
-        # conflicts with `jbaruch/coding-policy: ci-safety` on two fronts —
-        # direct push to a protected branch, and a `[skip ci]` message that
-        # bypasses the reviewer gate. Instead: publish whatever tile.json
-        # says, and require human-authored CHANGELOG + tile.json bumps in
-        # the PR that ships each release. Missing-bump cases surface as a
-        # red publish run (`Version X.Y.Z already exists`), which is the
-        # correct signal — not a silent auto-bump.
-        run: tessl tile publish .
+    uses: jbaruch/coding-policy/.github/workflows/publish-plugin.yml@b7eb9d08b78f72810891aa5fe7bf3e4fa6eb55f6
+    secrets:
+      TESSL_TOKEN: ${{ secrets.TESSL_TOKEN }}
+    with:
+      publish-mode: as-is
+      skill-review-credit-outage: skip
