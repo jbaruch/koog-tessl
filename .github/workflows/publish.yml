@@ -20,9 +20,8 @@ on:
       - '.tesslignore'
   workflow_dispatch:
 
-# as-is publish makes no commit/push — keep koog's least-privilege posture.
+# as-is publish makes no commit/push and uses no OIDC — least privilege.
 permissions:
-  id-token: write
   contents: read
 
 jobs:
